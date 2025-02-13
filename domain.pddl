@@ -40,7 +40,6 @@
             (not (pacman-em ?x ?y))
             (not(pacman-liberado))
             (pacman-em ?x ?yn)
-            (fantasmaB-liberado)
             (fantasmaB-down)
             (checar-morto)
         )
@@ -61,7 +60,6 @@
             (not (pacman-em ?x ?y))
             (not(pacman-liberado))
             (pacman-em ?x ?yn)
-            (fantasmaB-liberado)
             (fantasmaB-up)
             (checar-morto)
         )
@@ -82,7 +80,6 @@
             (not(pacman-em ?x ?y))
             (not(pacman-liberado))
             (pacman-em ?xn ?y)
-            (fantasmaB-liberado)
             (fantasmaB-right)
             (checar-morto)
         )
@@ -103,7 +100,6 @@
             (not(pacman-em ?x ?y))
             (not(pacman-liberado))
             (pacman-em ?xn ?y)
-            (fantasmaB-liberado)
             (fantasmaB-left)
             (checar-morto)
         )
@@ -124,6 +120,7 @@
             (not(fantasmaB-em ?x ?y))
             (fantasmaB-em ?x ?yn)
             (not(fantasmaB-liberado))
+            (not(fantasmaB-up))
             (pacman-liberado)
         )
     )
@@ -132,7 +129,7 @@
 
 (:action move-ghostB-down
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-up) (inc ?y ?yn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-down) (inc ?y ?yn))
     :effect (and 
     (when 
         (and 
@@ -143,6 +140,7 @@
             (not(fantasmaB-em ?x ?y))
             (fantasmaB-em ?x ?yn)
             (not(fantasmaB-liberado))
+            (not(fantasmaB-down))
             (pacman-liberado)
         )
     )
@@ -151,7 +149,7 @@
 
 (:action move-ghostB-left
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-up) (dec ?x ?xn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-left) (dec ?x ?xn))
     :effect (and 
     (when 
         (and 
@@ -162,6 +160,7 @@
             (not(fantasmaB-em ?x ?y))
             (fantasmaB-em ?xn ?y)
             (not(fantasmaB-liberado))
+            (not(fantasmaB-left))
             (pacman-liberado)
         )
     )
@@ -170,7 +169,7 @@
 
 (:action move-ghostB-right
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-up) (inc ?x ?xn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (fantasmaB-right) (inc ?x ?xn))
     :effect (and 
     (when 
         (and 
@@ -181,6 +180,7 @@
             (not(fantasmaB-em ?x ?y))
             (fantasmaB-em ?xn ?y)
             (not(fantasmaB-liberado))
+            (not(fantasmaB-right))
             (pacman-liberado)
         )
     )
@@ -198,7 +198,7 @@
             (pacman-morto)
         )
         (not(checar-morto))
-        (fantasmaB-liberado)
+        (pacman-liberado)
     )
 )
 
