@@ -163,7 +163,7 @@ check_morto_Pre = """
             (pacman-morto)
         )
         (not(checar-morto-pre))
-        (fantasmaR-liberado
+        (fantasmaR-liberado)
         (fantasmaR-right)
     )
 )
@@ -559,5 +559,5 @@ with open('domain.pddl', 'w') as file:
 {move_left_Blue}
 {move_right_Blue}
 
-))
+)
 """)

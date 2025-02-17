@@ -72,7 +72,7 @@
             (pacman-morto)
         )
         (not(checar-morto-pre))
-        (fantasmaR-liberado
+        (fantasmaR-liberado)
         (fantasmaR-right)
     )
 )
@@ -450,4 +450,4 @@
 )
 
 
-))
+)
