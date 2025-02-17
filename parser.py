@@ -539,6 +539,7 @@ with open('domain.pddl', 'w') as file:
 )
 {predicates}
 {check_morto_Pre}
+{check_morto_Pos}
 {move_up_P}
 {move_down_P}
 {move_left_P}
@@ -559,5 +560,8 @@ with open('domain.pddl', 'w') as file:
 {move_left_Blue}
 {move_right_Blue}
 
+{comer_fantasma_Red}
+{comer_fantasma_Green}
+{comer_fantasma_Blue}
 )
 """)
