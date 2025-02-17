@@ -1,17 +1,30 @@
 
 (define (problem pacman3x3)
     (:domain pacman)
-    (:objects x1 x2 x3 x4 x5 y1 y2 y3 y4 y5 - posicao)
-    (:init 
+    (:objects
+        x1 x2 x3 x4 x5 y1 y2 y3 y4 y5 - posicao
+    )
+    (:init
         (pacman-liberado)
         (pacman-em x2 y2)
         (fantasmaB-em x4 y4)
 
-        (parede x1 y1) (parede x1 y2) (parede x1 y3) (parede x1 y4) (parede x1 y5)
-        (parede x2 y1) (parede x2 y5)
-        (parede x3 y1) (parede x3 y5) 
-        (parede x4 y1) (parede x4 y5) 
-        (parede x5 y1) (parede x5 y2) (parede x5 y3) (parede x5 y4) (parede x5 y5) 
+        (parede-em x1 y1)
+        (parede-em x1 y2)
+        (parede-em x1 y3)
+        (parede-em x1 y4)
+        (parede-em x1 y5)
+        (parede-em x2 y1)
+        (parede-em x2 y5)
+        (parede-em x3 y1)
+        (parede-em x3 y5)
+        (parede-em x4 y1)
+        (parede-em x4 y5)
+        (parede-em x5 y1)
+        (parede-em x5 y2)
+        (parede-em x5 y3)
+        (parede-em x5 y4)
+        (parede-em x5 y5)
 
         (inc x1 x2)
         (inc x2 x3)
@@ -33,7 +46,7 @@
     )
     (:goal
         (and
-        (pacman-em x4 y2)
+            (pacman-em x4 y2)
         )
     )
 )
