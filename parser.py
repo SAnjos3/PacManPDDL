@@ -532,7 +532,7 @@ comer_fantasma_Blue = """
 with open('domain.pddl', 'w') as file:
     file.write(f"""(define (domain pacman)
 
-(:requirements :strips :disjuntive-preconditions :typing :conditional-effects :negative-preconditions)
+(:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions)
 
 (:types 
     posicao
@@ -559,5 +559,5 @@ with open('domain.pddl', 'w') as file:
 {move_left_Blue}
 {move_right_Blue}
 
-)
+))
 """)
