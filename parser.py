@@ -1,57 +1,42 @@
+
 predicates = """
-; Predicados de Posição:
-pacman-em ?x ?y
-fantasmaR-em ?x ?y
-fantasmaG-em ?x ?y
-fantasmaB-em ?x ?y
-frutaR-em ?x ?y
-frutaG-em ?x ?y
-frutaB-em ?x ?y
-parede ?x ?y
+(:predicates
+        ; Predicados de Direção do Fantasma Azul:
+        (fantasmaB-up)
+        (fantasmaB-right)
+        (fantasmaB-down)
+        (fantasmaB-left)
 
-; Predicados de Estado:
-pacman-morto
-pacman-liberado
-; Predicados de Liberação dos Fantasmas:
-fantasmaR-liberado
-fantasmaG-liberado
-fantasmaB-liberado
+        ; Predicados de Direção do Fantasma Verde:
+        (fantasmaG-up)
+        (fantasmaG-right)
+        (fantasmaG-down)
+        (fantasmaG-left)
 
-; Predicados de Direção do Fantasma Azul:
-fantasmaB-up
-fantasmaB-right
-fantasmaB-down
-fantasmaB-left
+        ; Predicados de Direção do Fantasma Vermelho:
+        (fantasmaR-up)
+        (fantasmaR-right)
+        (fantasmaR-down)
+        (fantasmaR-left)
 
-; Predicados de Direção do Fantasma Verde:
-fantasmaG-up
-fantasmaG-right
-fantasmaG-down
-fantasmaG-left
+        ; Predicados de Checagem de Morte:
+        (checar-morto-pre)
+        (checar-morto-pos)
 
-; Predicados de Direção do Fantasma Vermelho:
-fantasmaR-up
-fantasmaR-right
-fantasmaR-down
-fantasmaR-left
+        ; Predicados de Incremento/Decremento:
+        (inc ?x ?xn)
+        (dec ?x ?xn)
 
-; Predicados de Checagem de Morte:
-checar-morto-pre
-checar-morto-pos
+        ; Predicados frutas:
+        (frutaR-ativa)
+        (frutaG-ativa)
+        (frutaB-ativa)
 
-; Predicados de Incremento/Decremento:
-inc ?x ?xn
-dec ?x ?xn
-
-; Predicados frutas:
-frutaR-ativa
-frutaG-ativa
-frutaB-ativa
-
-; Predicados de finalização
-fantasmaR-morto
-fantasmaG-morto
-fantasmaB-morto
+        ; Predicados de finalização
+        (fantasmaR-morto)
+        (fantasmaG-morto)
+        (fantasmaB-morto)
+    )
 """
 
 move_up-P = """
@@ -163,7 +148,8 @@ check_morto-Pre = """
                 (pacman-morto)
             )
             (not(checar-morto-pre))
-            (fantasmaR-liberado)
+            (fantasmaR-liberado
+            (fantasmaR-right)
         )
     )
 """
@@ -185,6 +171,7 @@ move_up-Red = """
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
+                (fantasmaR-right)
             )
         )
     )
@@ -207,6 +194,7 @@ move_right-Red = """
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
+                (fantasmaR-down) 
             )
         )
     )
@@ -229,6 +217,7 @@ move_down-Red = """
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
+                (fantasmaR-left)
             )
         )
     )
@@ -251,6 +240,7 @@ move_left-Red = """
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
+                (fantasmaR-up)
             )
         )
     )
@@ -491,7 +481,7 @@ comer_fantasma-Red = """
 
 comer_fantasma-Green = """
         (:action comer-fantasma-Green
-        :parameters (?px ?py - posicao)
+        :parameters (?px ?py - posicao)(not(frutaG-em ?px ?py))
         :precondition (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py) (frutaG-ativa))
         :effect (and (fantasmaG-morto) (not(frutaG-ativa)))"""
 
