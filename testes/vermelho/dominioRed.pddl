@@ -1,6 +1,7 @@
 (define (domain pacman)
 
-    (:requirements :strips :typing :conditional-effects :negative-preconditions)
+    (:requirements :strips :typing :conditional-effects :negative-preconditions :disjunctive-preconditions
+    )
 
     (:types
         posicao
@@ -168,9 +169,7 @@
         :precondition (and (fantasmaR-em ?x ?y) (not(fantasmaR-morto)) (fantasmaR-liberado) (fantasmaR-up) (dec ?y ?yn))
         :effect (and
             (when
-                (and
-                    (not(parede-em ?x ?yn))
-                )
+                (not(parede-em ?x ?yn))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
@@ -179,7 +178,13 @@
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
-                (fantasmaR-right)
+            )
+            (when
+                (parede-em ?x ?yn)
+                (and
+                    (not(fantasmaR-up))
+                    (fantasmaR-right)
+                )
             )
         )
     )
@@ -188,9 +193,7 @@
         :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-right) (inc ?x ?xn))
         :effect (and
             (when
-                (and
-                    (not(parede-em ?xn ?y))
-                )
+                (not(parede-em ?xn ?y))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?xn ?y)
@@ -199,7 +202,13 @@
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
-                (fantasmaR-down)
+            )
+            (when
+                (parede-em ?xn ?y)
+                (and
+                    (not(fantasmaR-right))
+                    (fantasmaR-down)
+                )
             )
         )
     )
@@ -208,9 +217,7 @@
         :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-down) (inc ?y ?yn))
         :effect (and
             (when
-                (and
-                    (not(parede-em ?x ?yn))
-                )
+                (not(parede-em ?x ?yn))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
@@ -219,7 +226,13 @@
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
-                (fantasmaR-left)
+            )
+            (when
+                (parede-em ?x ?yn)
+                (and
+                    (not(fantasmaR-down))
+                    (fantasmaR-left)
+                )
             )
         )
     )
@@ -228,9 +241,7 @@
         :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-left) (dec ?x ?xn))
         :effect (and
             (when
-                (and
-                    (not(parede-em ?x ?xn))
-                )
+                (not(parede-em ?x ?xn))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?xn)
@@ -239,7 +250,13 @@
                     (pacman-liberado)
                     (checar-morto-pos)
                 )
-                (fantasmaR-up)
+            )
+            (when
+                (parede-em ?xn ?y)
+                (and
+                    (not(fantasmaR-left))
+                    (fantasmaR-up)
+                )
             )
         )
     )
