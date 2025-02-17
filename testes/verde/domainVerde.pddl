@@ -2,23 +2,52 @@
 
 (define (domain domainVerde)
 
-;remove requirements that are not needed
 (:requirements :strips :typing :conditional-effects :negative-preconditions )
 
 (:types 
     posicao
 )
 
-; un-comment following line if constants are needed
-;(:constants )
 
-(:predicates ;todo: define predicates here
+(:predicates
+    ; Predicados de Direção do Fantasma Azul:
+    (fantasmaB-up)
+    (fantasmaB-right)
+    (fantasmaB-down)
+    (fantasmaB-left)
+
+    ; Predicados de Direção do Fantasma Verde:
+    (fantasmaG-up)
+    (fantasmaG-right)
+    (fantasmaG-down)
+    (fantasmaG-left)
+
+    ; Predicados de Direção do Fantasma Vermelho:
+    (fantasmaR-up)
+    (fantasmaR-right)
+    (fantasmaR-down)
+    (fantasmaR-left)
+
+    ; Predicados de Checagem de Morte:
+    (checar-morto-pre)
+    (checar-morto-pos)
+
+    ; Predicados de Incremento/Decremento:
+    (inc ?x ?xn)
+    (dec ?x ?xn)
+
+    ; Predicados frutas:
+    (frutaR-ativa)
+    (frutaG-ativa)
+    (frutaB-ativa)
+
+    ; Predicados de finalização
+    (fantasmaR-morto)
+    (fantasmaG-morto)
+    (fantasmaB-morto)
+
+
 )
 
-
-(:functions ;todo: define numeric functions here
-)
-
-;define actions here
 
 )
