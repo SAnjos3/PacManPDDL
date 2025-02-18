@@ -60,7 +60,7 @@ move_up_P = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
 
             (and
@@ -84,7 +84,7 @@ move_right_P = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
 
             (and
@@ -108,7 +108,7 @@ move_down_P  = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
 
             (and
@@ -132,7 +132,7 @@ move_left_P = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
 
             (and
@@ -284,7 +284,7 @@ move_up_Green = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
             (and
                 (not(fantasmaG-em ?x ?y))
@@ -306,7 +306,7 @@ move_right_Green = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
             (and
                 (not(fantasmaG-em ?x ?y))
@@ -328,7 +328,7 @@ move_down_Green = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
             (and
                 (not(fantasmaG-em ?x ?y))
@@ -350,7 +350,7 @@ move_left_Green = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
             (and
                 (not(fantasmaG-em ?x ?y))
@@ -372,7 +372,7 @@ move_up_Blue = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
 
             (and
@@ -396,7 +396,7 @@ move_right_Blue = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
 
             (and
@@ -419,7 +419,7 @@ move_down_Blue  = """
     :effect (and
         (when
             (and
-                (not(parede ?x ?yn))
+                (not(parede-em ?x ?yn))
             )
 
             (and
@@ -442,7 +442,7 @@ move_left_Blue = """
     :effect (and
         (when
             (and
-                (not(parede ?xn ?y))
+                (not(parede-em ?xn ?y))
             )
 
             (and
@@ -512,13 +512,15 @@ comer_fantasma_Red = """
     :parameters (?px ?py - posicao)
     :precondition (and (pacman-em ?px ?py) (fantasmaR-em ?px ?py) (frutaR-ativa))
     :effect (and (fantasmaR-morto) (not(frutaR-ativa)))
+    )
 """
 
 comer_fantasma_Green = """
     (:action comer-fantasma-Green
-    :parameters (?px ?py - posicao)(not(frutaG-em ?px ?py))
+    :parameters (?px ?py - posicao)
     :precondition (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py) (frutaG-ativa))
     :effect (and (fantasmaG-morto) (not(frutaG-ativa)))
+    )
 """
 
 comer_fantasma_Blue = """
@@ -526,6 +528,7 @@ comer_fantasma_Blue = """
     :parameters (?px ?py - posicao)
     :precondition (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa))
     :effect (and (fantasmaB-morto) (not(frutaB-ativa)))
+    )
 """
 
 
