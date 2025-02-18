@@ -8,7 +8,7 @@
         (pacman-liberado)
         (pacman-em x2 y2)
         (fantasmaR-right)
-        ; (frutaR-ativa)
+        (frutaR-ativa)
         (fantasmaR-em x4 y4)
 
         (parede-em x1 y1)
