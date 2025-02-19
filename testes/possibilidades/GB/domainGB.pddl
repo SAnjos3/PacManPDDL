@@ -197,7 +197,7 @@
             )
             (when
                 (and (parede-em ?x ?yn))
-                (and (not(fantasmaG-liberado)) (not(fantasmaG-up)) (checar-morto-pos))
+                (and (not(fantasmaG-liberado)) (not(fantasmaG-up)) (fantasmaB-liberado))
             )
         )
     )
@@ -221,7 +221,7 @@
             )
             (when
                 (and (parede-em ?x ?yn))
-                (and (not(fantasmaG-liberado)) (not(fantasmaG-down)) (checar-morto-pos))
+                (and (not(fantasmaG-liberado)) (not(fantasmaG-down)) (fantasmaB-liberado))
             )
         )
     )
@@ -246,7 +246,7 @@
 
             (when
                 (and (parede-em ?xn ?y))
-                (and (not(fantasmaG-liberado)) (not(fantasmaG-left)) (checar-morto-pos))
+                (and (not(fantasmaG-liberado)) (not(fantasmaG-left)) (fantasmaB-liberado))
             )
         )
     )
@@ -271,7 +271,7 @@
 
             (when
                 (and (parede-em ?xn ?y))
-                (and (not(fantasmaG-liberado)) (not(fantasmaG-right)) (checar-morto-pos))
+                (and (not(fantasmaG-liberado)) (not(fantasmaG-right)) (fantasmaB-liberado))
             )
         )
     )
