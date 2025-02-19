@@ -8,12 +8,11 @@
         (pacman-liberado)
         (pacman-em x2 y2)
 
-        (fantasmaR-em x4 y4)
-        (fantasmaR-right)
-        (frutaR-em x3 y3)
+        (fantasmaG-em x4 y4)
+        (frutaG-em x3 y3)
 
         (fantasmaB-em x3 y4)
-        (frutaG-em x4 y2)
+        (frutaB-em x4 y2)
 
         (parede-em x1 y1)
         (parede-em x1 y2)
@@ -53,7 +52,8 @@
     (:goal
         (and
             (not(pacman-morto))
-            (fantasmaR-morto)
+            (fantasmaG-morto)
+            (fantasmaB-morto)
         )
     )
 )
