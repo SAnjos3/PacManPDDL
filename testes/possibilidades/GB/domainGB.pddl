@@ -66,6 +66,12 @@
             )
             (not(checar-morto-pre))
             (fantasmaG-liberado)
+            (when
+                (and (frutaG-em ?px ?py))
+                (frutaG-ativa))
+            (when
+                (and (frutaB-em ?px ?py))
+                (frutaB-ativa))
 
         )
     )

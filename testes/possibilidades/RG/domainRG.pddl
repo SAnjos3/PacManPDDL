@@ -56,13 +56,22 @@
         :effect (and
             (when
                 (or
-                    (and (pacman-em ?px ?py) (fantasmaR-em ?px ?py))
                     (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
+                    (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
                 )
                 (pacman-morto)
             )
             (not(checar-morto-pre))
-            (fantasmaR-liberado)
+            (fantasmaG-liberado)
+            (when
+                (and (frutaR-em ?px ?py))
+                (frutaR-ativa))
+            (when
+                (and (frutaG-em ?px ?py))
+                (frutaG-ativa))
+            (when
+                (and (frutaB-em ?px ?py))
+                (frutaB-ativa))
 
         )
     )
