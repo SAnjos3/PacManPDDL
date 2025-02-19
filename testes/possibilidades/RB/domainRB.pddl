@@ -206,7 +206,7 @@
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
                     (not(fantasmaR-liberado))
-                    (checar-morto-pos)
+                    (fantasmaB-liberado)
                 )
             )
             (when
@@ -230,7 +230,7 @@
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
                     (not(fantasmaR-liberado))
-                    (checar-morto-pos)
+                    (fantasmaB-liberado)
                 )
             )
             (when
@@ -254,7 +254,7 @@
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?xn ?y)
                     (not(fantasmaR-liberado))
-                    (checar-morto-pos)
+                    (fantasmaB-liberado)
                 )
             )
             (when
@@ -278,7 +278,7 @@
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?xn ?y)
                     (not(fantasmaR-liberado))
-                    (checar-morto-pos)
+                    (fantasmaB-liberado)
                 )
             )
             (when
