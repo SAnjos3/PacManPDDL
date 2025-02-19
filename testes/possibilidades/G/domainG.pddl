@@ -9,25 +9,13 @@
     (:predicates
         ; Predicados de Localização
         (pacman-em ?px ?py - posicao)
-
         (fantasmaG-em ?px ?py - posicao)
-        (fantasmaB-em ?px ?py - posicao)
-
         (frutaG-em ?px ?py - posicao)
-        (frutaB-em ?px ?py - posicao)
         (parede-em ?px ?py - posicao)
 
         ; Predicados de liberação
         (pacman-liberado)
-
         (fantasmaG-liberado)
-        (fantasmaB-liberado)
-
-        ; Predicados de Direção do Fantasma Azul:
-        (fantasmaB-up)
-        (fantasmaB-right)
-        (fantasmaB-down)
-        (fantasmaB-left)
 
         ; Predicados de Direção do Fantasma Verde:
         (fantasmaG-up)
@@ -45,51 +33,41 @@
 
         ; Predicados frutas:
         (frutaG-ativa)
-        (frutaB-ativa)
 
         ; Predicados de finalização
         (fantasmaG-morto)
-        (fantasmaB-morto)
         (pacman-morto)
     )
-    ;-------------------------------------------Checagem---------------------------------------------------------
+
+    ;------------------------------------------Checagem------------------------------------------
     (:action checagem-morto-pre
         :parameters (?px ?py - posicao)
         :precondition (and (checar-morto-pre) (pacman-em ?px ?py))
         :effect (and
             (when
-                (or
-                    (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
-                    (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
-                )
+                (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
                 (pacman-morto)
             )
             (not(checar-morto-pre))
             (fantasmaG-liberado)
             (when
-                (and (pacman-em ?px ?py) (frutaG-em ?px ?py))
-                (and (frutaG-ativa) (not(frutaB-ativa))))
-            (when
-                (and (pacman-em ?px ?py) (frutaB-em ?px ?py))
-                (and (frutaB-ativa) (not(frutaG-ativa))))
+                (and (pacman-em ?px ?py)(frutaG-em ?px ?py))
+                (and(frutaG-ativa) (not(frutaG-em ?px ?py))))
         )
     )
     (:action checagem-morto-pos
         :parameters (?px ?py - posicao)
-        :precondition (and (or (checar-morto-pos) (fantasmaB-morto)) (pacman-em ?px ?py))
+        :precondition (and (checar-morto-pos) (pacman-em ?px ?py))
         :effect (and
             (when
-                (or
-                    (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
-                    (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
-                )
+                (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
                 (pacman-morto)
             )
             (not(checar-morto-pos))
             (pacman-liberado)
         )
     )
-    ;---------------------------------------------------Pacman------------------------------------------------------
+    ;---------------------------------------Pacman----------------------------------------
     (:action move-pacman-up
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (pacman-liberado) (pacman-em ?x ?y) (dec ?y ?yn))
@@ -103,7 +81,6 @@
                     (not(pacman-liberado))
                     (pacman-em ?x ?yn)
                     (fantasmaG-up)
-                    (fantasmaB-down)
                     (checar-morto-pre)
                 )
             )
@@ -124,7 +101,6 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaB-up)
                     (fantasmaG-down)
                     (checar-morto-pre)
                 )
@@ -146,7 +122,6 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-right)
                     (fantasmaG-left)
                     (checar-morto-pre)
                 )
@@ -168,7 +143,6 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-left)
                     (fantasmaG-right)
                     (checar-morto-pre)
                 )
@@ -176,7 +150,7 @@
         )
     )
 
-    ; ------------------------------------------------FantasmaGreen-----------------------------------------------------------
+    ; ---------------------------------------GREEN----------------------------------------
 
     (:action move-fantasmaG-up
         :parameters (?x ?y ?yn - posicao)
@@ -191,7 +165,7 @@
                     (fantasmaG-em ?x ?yn)
                     (not(fantasmaG-up))
                     (not(fantasmaG-liberado))
-                    (fantasmaB-liberado)
+                    (checar-morto-pos)
 
                 )
             )
@@ -215,7 +189,7 @@
                     (fantasmaG-em ?x ?yn)
                     (not(fantasmaG-down))
                     (not(fantasmaG-liberado))
-                    (fantasmaB-liberado)
+                    (checar-morto-pos)
 
                 )
             )
@@ -239,7 +213,7 @@
                     (fantasmaG-em ?xn ?y)
                     (not(fantasmaG-left))
                     (not(fantasmaG-liberado))
-                    (fantasmaB-liberado)
+                    (checar-morto-pos)
 
                 )
             )
@@ -264,7 +238,7 @@
                     (fantasmaG-em ?xn ?y)
                     (not(fantasmaG-right))
                     (not(fantasmaG-liberado))
-                    (fantasmaB-liberado)
+                    (checar-morto-pos)
 
                 )
             )
@@ -275,117 +249,12 @@
             )
         )
     )
-    ;---------------------------------------------FantasmaBlue-------------------------------------------------------------
-    (:action move-fantasmaB-up
-        :parameters (?x ?y ?yn - posicao)
-        :precondition (and (fantasmaB-em ?x ?y) (or (fantasmaB-liberado) (fantasmaG-morto)) (not(fantasmaB-morto)) (fantasmaB-up) (dec ?y ?yn))
-        :effect (and
-            (when
-                (and
-                    (not(parede-em ?x ?yn))
-                )
-
-                (and
-                    (not(fantasmaB-em ?x ?y))
-                    (fantasmaB-em ?x ?yn)
-
-                    (not(fantasmaB-liberado))
-                    (not(fantasmaB-up))
-                    (checar-morto-pos)
-
-                )
-            )
-            (when
-                (and (parede-em ?x ?yn))
-                (and (not(fantasmaB-liberado)) (not(fantasmaG-up)) (checar-morto-pos))
-            )
-        )
-    )
-
-    (:action move-fantasmaB-down
-        :parameters (?x ?y ?yn - posicao)
-        :precondition (and (fantasmaB-em ?x ?y) (or (fantasmaB-liberado) (fantasmaG-morto)) (not(fantasmaB-morto)) (fantasmaB-down) (inc ?y ?yn))
-        :effect (and
-            (when
-                (and
-                    (not(parede-em ?x ?yn))
-                )
-
-                (and
-                    (not(fantasmaB-em ?x ?y))
-                    (fantasmaB-em ?x ?yn)
-                    (not(fantasmaB-liberado))
-                    (not(fantasmaB-down))
-                    (checar-morto-pos)
-
-                )
-            )
-            (when
-                (and (parede-em ?x ?yn))
-                (and (not(fantasmaB-liberado)) (not(fantasmaG-down)) (checar-morto-pos))
-            )
-        )
-    )
-
-    (:action move-fantasmaB-left
-        :parameters (?x ?y ?xn - posicao)
-        :precondition (and (fantasmaB-em ?x ?y) (or (fantasmaB-liberado) (fantasmaG-morto)) (not(fantasmaB-morto)) (fantasmaB-left) (dec ?x ?xn))
-        :effect (and
-            (when
-                (and
-                    (not(parede-em ?xn ?y))
-                )
-
-                (and
-                    (not(fantasmaB-em ?x ?y))
-                    (fantasmaB-em ?xn ?y)
-                    (not(fantasmaB-liberado))
-                    (not(fantasmaB-left))
-                    (checar-morto-pos)
-
-                )
-            )
-            (when
-                (and (parede-em ?xn ?y))
-                (and (not(fantasmaB-liberado)) (not(fantasmaG-left)) (checar-morto-pos))
-            )
-        )
-    )
-
-    (:action move-fantasmaB-right
-        :parameters (?x ?y ?xn - posicao)
-        :precondition (and (fantasmaB-em ?x ?y) (or (fantasmaB-liberado) (fantasmaG-morto)) (not(fantasmaB-morto)) (fantasmaB-right) (inc ?x ?xn))
-        :effect (and
-            (when
-                (and
-                    (not(parede-em ?xn ?y))
-                )
-
-                (and
-                    (not(fantasmaB-em ?x ?y))
-                    (fantasmaB-em ?xn ?y)
-                    (not(fantasmaB-liberado))
-                    (not(fantasmaB-right))
-                    (checar-morto-pos)
-
-                )
-            )
-            (when
-                (and (parede-em ?xn ?y))
-                (and (not(fantasmaB-liberado)) (not(fantasmaG-right)) (checar-morto-pos))
-            )
-        )
-    )
-
-    (:action comer-fantasma-Blue
-        :parameters (?px ?py - posicao)
-        :precondition (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa))
-        :effect (and (fantasmaB-morto) (not(frutaB-ativa)) (not(fantasmaB-em ?px ?py)))
-    )
+    ;---------------------------------------ComerFrutaGreen-------------------------------------
 
     (:action comer-fantasma-Green
         :parameters (?px ?py - posicao)
         :precondition (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py) (frutaG-ativa))
-        :effect (and (fantasmaG-morto) (not(frutaG-ativa)) (not(fantasmaG-em ?px ?py)))
+        :effect (and (fantasmaG-morto) (not(frutaG-ativa)))
     )
+
 )
