@@ -42,8 +42,7 @@
     (fantasmaR-left)
 
     ; Predicados de Checagem de Morte:
-    (checar-morto-pre)
-    (checar-morto-pos)
+    (checar-morto)
     
 
     ; Predicados de Incremento/Decremento:
@@ -65,7 +64,7 @@
 
     (:action checagem-morto-pre
     :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pre) (pacman-em ?px ?py))
+    :precondition (and (checar-morto) (pacman-em ?px ?py))
     :effect (and
         (when
             (or
@@ -75,27 +74,12 @@
             )
             (pacman-morto)
         )
-        (not(checar-morto-pre))
-        (fantasmaG-liberado)
+        (not(checar-morto))
+        (fantasmaR-liberado)
 
     )
 )
- (:action checagem-morto-pos
-    :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pos) (pacman-em ?px ?py))
-    :effect (and
-        (when
-            (or
-                (and (pacman-em ?px ?py) (fantasmaR-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
-            )
-            (pacman-morto)
-        )
-        (not(checar-morto-pos))
-        (pacman-liberado)
-    )
-)
+
 
     (:action move-pacman-up
     :parameters (?x ?y ?yn - posicao)
@@ -111,7 +95,7 @@
                 (pacman-em ?x ?yn)
                 (fantasmaG-up)
                 (fantasmaB-down)
-                (checar-morto-pre)
+                (checar-morto)
             )
         )
     )
@@ -134,7 +118,7 @@
                 (pacman-em ?x ?yn)
                 (fantasmaB-up)
                 (fantasmaG-down)
-                (checar-morto-pre)
+                (checar-morto)
             )
         )
     )
@@ -157,7 +141,7 @@
                 (pacman-em ?xn ?y)
                 (fantasmaB-right)
                 (fantasmaG-left)
-                (checar-morto-pre)
+                (checar-morto)
             )
         )
     )
@@ -180,13 +164,14 @@
                 (pacman-em ?xn ?y)
                 (fantasmaB-left)
                 (fantasmaG-right)
-                (checar-morto-pre)
+                (checar-morto)
             )
         )
     )
 )
 
-; ---------------------------GREEN---------------------------
+
+
 
 
     (:action move-fantasmaG-up
@@ -202,12 +187,9 @@
                 (fantasmaG-em ?x ?yn)
                 (not(fantasmaG-up))
                 (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (pacman-liberado)
                 
             )
-        )
-        (when (and (parede-em ?x ?yn)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-up)) (checar-morto-pos))
         )
     )
 )
@@ -226,12 +208,9 @@
                 (fantasmaG-em ?x ?yn)
                 (not(fantasmaG-down))
                 (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (pacman-liberado)
                 
             )
-        )
-        (when (and (parede-em ?x ?yn)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-down)) (checar-morto-pos))
         )
     )
 )
@@ -247,16 +226,12 @@
             )
             (and
                 (not(fantasmaG-em ?x ?y))
-                (fantasmaG-em ?xn ?y)
+                (fantasmaG-em ?x ?xn)
                 (not(fantasmaG-left))
                 (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (pacman-liberado)
                 
             )
-        )
-
-        (when (and (parede-em ?xn ?y)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-left)) (checar-morto-pos))
         )
     )
 )
@@ -275,16 +250,14 @@
                 (fantasmaG-em ?xn ?y)
                 (not(fantasmaG-right))
                 (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (pacman-liberado)
                 
             )
         )
-
-        (when (and (parede-em ?xn ?y)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-right)) (checar-morto-pos))
-        )
     )
 )
+
+
 
     (:action comer-fruta-Green
     :parameters (?px ?py - posicao)

@@ -12,11 +12,11 @@
     (fantasmaR-em ?px ?py - posicao)
     (fantasmaG-em ?px ?py - posicao)
     (fantasmaB-em ?px ?py - posicao)
-    (parede-em ?px ?py)
+    (parede-em ?px ?py)- 
 
-    ; Predicados de liberação
+-     ; Predicados de lib- eração
     (pacman-liberado)
-    (fantasmaR-liberado)
+ - posicao    (fantasmaR-liberado)
     (fantasmaG-liberado)
     (fantasmaB-liberado)
 
@@ -46,8 +46,8 @@
     (inc ?x ?xn)
     (dec ?x ?xn)
 
-    ; Predicados frutas:
-    (frutaR-ativa)
+    ; Predicado - posicaos frutas:
+    (frutaR-ati - posicaova)
     (frutaG-ativa)
     (frutaB-ativa)
 
@@ -73,7 +73,7 @@
         )
         (not(checar-morto-pre))
         (fantasmaR-liberado)
-        (fantasmaR-right)
+    
     )
 )
 
@@ -198,9 +198,7 @@
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
-                    (not(fantasmaR-up))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -224,9 +222,7 @@
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
-                    (not(fantasmaR-down))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -246,13 +242,11 @@
         :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-left) (dec ?x ?xn))
         :effect (and
             (when
-                (not(parede-em ?x ?xn))
+                (not(parede-em ?xn ?y))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?xn)
-                    (not(fantasmaR-left))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -276,9 +270,7 @@
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?xn ?y)
-                    (not(fantasmaR-right))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )

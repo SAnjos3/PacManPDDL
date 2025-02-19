@@ -65,7 +65,7 @@
 
     (:action checagem-morto-pre
     :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pre) (pacman-em ?px ?py))
+    :precondition (and (checar-morto) (pacman-em ?px ?py))
     :effect (and
         (when
             (or
@@ -75,27 +75,12 @@
             )
             (pacman-morto)
         )
-        (not(checar-morto-pre))
-        (fantasmaG-liberado)
+        (not(checar-morto))
+        (fantasmaR-liberado)
 
     )
 )
- (:action checagem-morto-pos
-    :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pos) (pacman-em ?px ?py))
-    :effect (and
-        (when
-            (or
-                (and (pacman-em ?px ?py) (fantasmaR-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
-            )
-            (pacman-morto)
-        )
-        (not(checar-morto-pos))
-        (pacman-liberado)
-    )
-)
+
 
     (:action move-pacman-up
     :parameters (?x ?y ?yn - posicao)
@@ -186,119 +171,111 @@
     )
 )
 
-; ---------------------------GREEN---------------------------
 
 
-    (:action move-fantasmaG-up
+    (:action move-fantasmaB-up
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (fantasmaG-em ?x ?y) (fantasmaG-liberado) (not(fantasmaG-morto)) (fantasmaG-up) (dec ?y ?yn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (not(fantasmaB-morto)) (fantasmaB-up) (dec ?y ?yn))
     :effect (and
         (when
             (and
                 (not(parede-em ?x ?yn))
             )
+
             (and
-                (not(fantasmaG-em ?x ?y))
-                (fantasmaG-em ?x ?yn)
-                (not(fantasmaG-up))
-                (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (not(fantasmaB-em ?x ?y))
+                (fantasmaB-em ?x ?yn)
+
+                (not(fantasmaB-liberado))
+                (not(fantasmaB-up))
+                (pacman-liberado)
                 
             )
-        )
-        (when (and (parede-em ?x ?yn)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-up)) (checar-morto-pos))
         )
     )
 )
 
 
-    (:action move-fantasmaG-down
+    (:action move-fantasmaB-down
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (fantasmaG-em ?x ?y) (fantasmaG-liberado) (not(fantasmaG-morto)) (fantasmaG-down) (inc ?y ?yn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (not(fantasmaB-morto)) (fantasmaB-down) (inc ?y ?yn))
     :effect (and
         (when
             (and
                 (not(parede-em ?x ?yn))
             )
+
             (and
-                (not(fantasmaG-em ?x ?y))
-                (fantasmaG-em ?x ?yn)
-                (not(fantasmaG-down))
-                (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (not(fantasmaB-em ?x ?y))
+                (fantasmaB-em ?x ?yn)
+                (not(fantasmaB-liberado))
+                (not(fantasmaB-down))
+                (pacman-liberado)
                 
             )
-        )
-        (when (and (parede-em ?x ?yn)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-down)) (checar-morto-pos))
         )
     )
 )
 
 
-    (:action move-fantasmaG-left
+    (:action move-fantasmaB-left
     :parameters (?x ?y ?xn - posicao)
-    :precondition (and (fantasmaG-em ?x ?y) (fantasmaG-liberado) (not(fantasmaG-morto)) (fantasmaG-left) (dec ?x ?xn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (not(fantasmaB-morto)) (fantasmaB-left) (dec ?x ?xn))
     :effect (and
         (when
             (and
                 (not(parede-em ?xn ?y))
             )
+
             (and
-                (not(fantasmaG-em ?x ?y))
-                (fantasmaG-em ?xn ?y)
-                (not(fantasmaG-left))
-                (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (not(fantasmaB-em ?x ?y))
+                (fantasmaB-em ?xn ?y)
+                (not(fantasmaB-liberado))
+                (not(fantasmaB-left))
+                (pacman-liberado)
                 
             )
-        )
-
-        (when (and (parede-em ?xn ?y)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-left)) (checar-morto-pos))
         )
     )
 )
 
 
-    (:action move-fantasmaG-right
+    (:action move-fantasmaB-right
     :parameters (?x ?y ?xn - posicao)
-    :precondition (and (fantasmaG-em ?x ?y) (fantasmaG-liberado) (not(fantasmaG-morto)) (fantasmaG-right) (inc ?x ?xn))
+    :precondition (and (fantasmaB-em ?x ?y) (fantasmaB-liberado) (not(fantasmaB-morto)) (fantasmaB-right) (inc ?x ?xn))
     :effect (and
         (when
             (and
                 (not(parede-em ?xn ?y))
             )
+
             (and
-                (not(fantasmaG-em ?x ?y))
-                (fantasmaG-em ?xn ?y)
-                (not(fantasmaG-right))
-                (not(fantasmaG-liberado))
-                (checar-morto-pos)
+                (not(fantasmaB-em ?x ?y))
+                (fantasmaB-em ?xn ?y)
+                (not(fantasmaB-liberado))
+                (not(fantasmaB-right))
+                (pacman-liberado)
                 
             )
-        )
-
-        (when (and (parede-em ?xn ?y)) 
-            (and (not(fantasmaG-liberado)) (not(fantasmaG-right)) (checar-morto-pos))
         )
     )
 )
 
-    (:action comer-fruta-Green
+
+
+    (:action comer-fruta-Blue
     :parameters (?px ?py - posicao)
-    :precondition (and (pacman-em ?px ?py) (frutaG-em ?px ?py) (not(frutaR-ativa)) (not(frutaB-ativa)))
+    :precondition (and (pacman-em ?px ?py) (frutaB-em ?px ?py) (not(frutaR-ativa)) (not(frutaG-ativa)))
     :effect (and
-    (not(frutaG-em ?px ?py))
-    (frutaG-ativa))
+    (not(frutaB-em ?px ?py))
+    (frutaB-ativa))
     )
 
 
-    (:action comer-fantasma-Green
+    (:action comer-fantasma-Blue
     :parameters (?px ?py - posicao)
-    :precondition (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py) (frutaG-ativa))
-    :effect (and (fantasmaG-morto) (not(frutaG-ativa)))
+    :precondition (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa))
+    :effect (and (fantasmaB-morto) (not(frutaB-ativa)))
     )
 
 )

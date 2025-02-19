@@ -7,7 +7,9 @@
     (:init
         (pacman-liberado)
         (pacman-em x2 y2)
-        (fantasmaB-em x4 y4)
+        (fantasmaR-em x4 y4)
+        (fantasmaR-right)
+        (frutaR-em x3 y3)
 
         (parede-em x1 y1)
         (parede-em x1 y2)
@@ -46,7 +48,8 @@
     )
     (:goal
         (and
-            (pacman-em x4 y2)
+            (not(pacman-morto))
+            (fantasmaR-morto)
         )
     )
 )

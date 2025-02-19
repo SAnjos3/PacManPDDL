@@ -6,7 +6,10 @@ predicates = """
     (fantasmaR-em ?px ?py - posicao)
     (fantasmaG-em ?px ?py - posicao)
     (fantasmaB-em ?px ?py - posicao)
-    (parede-em ?px ?py)
+    (frutaR-em ?px ?py - posicao)
+    (frutaG-em ?px ?py - posicao)
+    (frutaB-em ?px ?py - posicao)
+    (parede-em ?px ?py - posicao)
 
     ; Predicados de liberação
     (pacman-liberado)
@@ -35,6 +38,7 @@ predicates = """
     ; Predicados de Checagem de Morte:
     (checar-morto-pre)
     (checar-morto-pos)
+    
 
     ; Predicados de Incremento/Decremento:
     (inc ?x ?xn)
@@ -62,11 +66,9 @@ move_up_P = """
             (and
                 (not(parede-em ?x ?yn))
             )
-
             (and
                 (not (pacman-em ?x ?y))
                 (not(pacman-liberado))
-
                 (pacman-em ?x ?yn)
                 (fantasmaG-up)
                 (fantasmaB-down)
@@ -152,7 +154,7 @@ move_left_P = """
 check_morto_Pre = """
     (:action checagem-morto-pre
     :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pre) (pacman-em ?px ?py))
+    :precondition (and (checar-morto) (pacman-em ?px ?py))
     :effect (and
         (when
             (or
@@ -162,9 +164,9 @@ check_morto_Pre = """
             )
             (pacman-morto)
         )
-        (not(checar-morto-pre))
+        (not(checar-morto))
         (fantasmaR-liberado)
-        (fantasmaR-right)
+
     )
 )
 """
@@ -179,9 +181,7 @@ move_up_Red = """
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
-                    (not(fantasmaR-up))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -206,9 +206,7 @@ move_right_Red = """
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?xn ?y)
-                    (not(fantasmaR-right))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -224,18 +222,16 @@ move_right_Red = """
 """
 
 move_down_Red = """
-    (:action move-fantasmaR-down
+(:action move-fantasmaR-down
         :parameters (?x ?y ?yn - posicao)
-        :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-down) (inc ?y ?yn))
+        :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-down) (inc ?y ?yn) )
         :effect (and
             (when
                 (not(parede-em ?x ?yn))
                 (and
                     (not(fantasmaR-em ?x ?y))
                     (fantasmaR-em ?x ?yn)
-                    (not(fantasmaR-down))
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -248,6 +244,7 @@ move_down_Red = """
             )
         )
     )
+
 """
 
 move_left_Red = """
@@ -256,13 +253,11 @@ move_left_Red = """
         :precondition (and (fantasmaR-em ?x ?y) (fantasmaR-liberado) (not(fantasmaR-morto)) (fantasmaR-left) (dec ?x ?xn))
         :effect (and
             (when
-                (not(parede-em ?x ?xn))
+                (not(parede-em ?xn ?y))
                 (and
                     (not(fantasmaR-em ?x ?y))
-                    (fantasmaR-em ?x ?xn)
-                    (not(fantasmaR-left))
+                    (fantasmaR-em ?xn ?y)
                     (not(fantasmaR-liberado))
-                    (pacman-liberado)
                     (checar-morto-pos)
                 )
             )
@@ -292,7 +287,7 @@ move_up_Green = """
                 (not(fantasmaG-up))
                 (not(fantasmaG-liberado))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -314,7 +309,7 @@ move_right_Green = """
                 (not(fantasmaG-right))
                 (not(fantasmaG-liberado))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -336,7 +331,7 @@ move_down_Green = """
                 (not(fantasmaG-down))
                 (not(fantasmaG-liberado))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -358,7 +353,7 @@ move_left_Green = """
                 (not(fantasmaG-left))
                 (not(fantasmaG-liberado))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -382,7 +377,7 @@ move_up_Blue = """
                 (not(fantasmaB-liberado))
                 (not(fantasmaB-up))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -405,7 +400,7 @@ move_right_Blue = """
                 (not(fantasmaB-liberado))
                 (not(fantasmaB-right))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -428,7 +423,7 @@ move_down_Blue  = """
                 (not(fantasmaB-liberado))
                 (not(fantasmaB-down))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
     )
@@ -451,28 +446,9 @@ move_left_Blue = """
                 (not(fantasmaB-liberado))
                 (not(fantasmaB-left))
                 (pacman-liberado)
-                (checar-morto-pos)
+                
             )
         )
-    )
-)
-"""
-
-check_morto_Pos = """
-    (:action checagem-morto-pos
-    :parameters (?px ?py - posicao)
-    :precondition (and (checar-morto-pos) (pacman-em ?px ?py))
-    :effect (and
-        (when
-            (or
-                (and (pacman-em ?px ?py) (fantasmaR-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaG-em ?px ?py))
-                (and (pacman-em ?px ?py) (fantasmaB-em ?px ?py))
-            )
-            (pacman-morto)
-        )
-        (not(checar-morto-pos))
-        (pacman-liberado)
     )
 )
 """
@@ -532,7 +508,7 @@ comer_fantasma_Blue = """
 """
 
 
-with open('domain.pddl', 'w') as file:
+with open('domainAZUL.pddl', 'w') as file:
     file.write(f"""(define (domain pacman)
 
 (:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions)
@@ -542,29 +518,17 @@ with open('domain.pddl', 'w') as file:
 )
 {predicates}
 {check_morto_Pre}
-{check_morto_Pos}
 {move_up_P}
 {move_down_P}
 {move_left_P}
 {move_right_P}
-
-{move_up_Red}
-{move_down_Red}
-{move_left_Red}
-{move_right_Red}
-
-{move_up_Green}
-{move_down_Green}
-{move_left_Green}
-{move_right_Green}
 
 {move_up_Blue}
 {move_down_Blue}
 {move_left_Blue}
 {move_right_Blue}
 
-{comer_fantasma_Red}
-{comer_fantasma_Green}
+{comer_fruta_Blue}
 {comer_fantasma_Blue}
 )
 """)
