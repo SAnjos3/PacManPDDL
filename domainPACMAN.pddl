@@ -7,14 +7,6 @@
         posicao
     )
     
-    (define (domain pacman)
-
-    (:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions)
-
-    (:types
-        posicao
-    )
-
     (:predicates
         ; Predicados de Localização
         (pacman-em ?px ?py - posicao)
@@ -299,5 +291,5 @@
     )
 
 
-    ))
+    )
     
