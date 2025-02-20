@@ -661,7 +661,7 @@ domainB = """
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaB-up)
+                    (fantasmaB-down)
                     (checar-morto-pre)
                 )
             )
@@ -692,7 +692,7 @@ domainB = """
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaB-down)
+                    (fantasmaB-up)
                     (checar-morto-pre)
                 )
             )
@@ -723,7 +723,7 @@ domainB = """
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-left)
+                    (fantasmaB-right)
                     (checar-morto-pre)
                 )
             )
@@ -754,7 +754,7 @@ domainB = """
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-right)
+                    (fantasmaB-left)
                     (checar-morto-pre)
                 )
             )
@@ -883,7 +883,15 @@ domainB = """
 """
 
 domainRG = """
-        (:predicates
+        (define (domain pacman)
+
+    (:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions)
+
+    (:types
+        posicao
+    )
+
+    (:predicates
         ; Predicados de Localização
         (pacman-em ?px ?py - posicao)
         (fantasmaR-em ?px ?py - posicao)
@@ -951,7 +959,7 @@ domainRG = """
 
     (:action checagem-morto-pos
         :parameters (?px ?py - posicao)
-        :precondition (and (or (checar-morto-pos) (fantasmaG-morto))  (not(fantasmaR-liberado))(pacman-em ?px ?py))
+        :precondition (and (checar-morto-pos)(pacman-em ?px ?py))
         :effect (and
             (when
                 (or
@@ -1112,9 +1120,10 @@ domainRG = """
                 )
             )
             (when
-                (and(fantasmaG-morto)(not(parede-em ?x ?yn)))
+                (and(fantasmaG-morto)
+                    (not(parede-em ?x ?yn)))
                 (and(checar-morto-pos))
-            ) 
+            )
         )
     )
 
@@ -1139,9 +1148,10 @@ domainRG = """
                 )
             )
             (when
-                (and(fantasmaG-morto)(not(parede-em ?x ?yn)))
+                (and(fantasmaG-morto)
+                    (not(parede-em ?x ?yn)))
                 (and(checar-morto-pos))
-            ) 
+            )
         )
     )
 
@@ -1166,9 +1176,10 @@ domainRG = """
                 )
             )
             (when
-                (and(fantasmaG-morto)(not(parede-em ?xn ?y)))
+                (and(fantasmaG-morto)
+                    (not(parede-em ?xn ?y)))
                 (and(checar-morto-pos))
-            ) 
+            )
         )
     )
 
@@ -1193,9 +1204,10 @@ domainRG = """
                 )
             )
             (when
-                (and(fantasmaG-morto)(not(parede-em ?xn ?y)))
+                (and(fantasmaG-morto)
+                    (not(parede-em ?xn ?y)))
                 (and(checar-morto-pos))
-            ) 
+            )
         )
     )
     ;-------------------------------------------------FantasmaGreen---------------------------------------------
@@ -1308,6 +1320,7 @@ domainRG = """
         :precondition (and (pacman-em ?px ?py) (not(fantasmaR-morto)) (fantasmaR-em ?px ?py) (frutaR-ativa))
         :effect (and (fantasmaR-morto) (not(frutaR-ativa)) (not(fantasmaR-em ?px ?py)))
     )
+)
 
 """
 
@@ -2170,7 +2183,6 @@ domainGB = """
 
 domainRGB = """colocar aqui"""
 
- 
 entrada = sys.stdin.read()
 mapa = entrada.strip().split("\n")
 
