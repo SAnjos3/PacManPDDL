@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 
 domainR = """
     (:predicates
@@ -2243,7 +2244,7 @@ with open("problemPACMAN.pddl", "w") as f:
     for y, linha in enumerate(mapa):
         for x, char in enumerate(linha):
             if(char == '#'):
-                f.write(f"\t\t(parede-em x{y+1} y{x+1})\n")
+                f.write(f"\t\t(parede-em x{x+1} y{y+1})\n")
             if(char == 'P'):
                 f.write(f"\t\t(pacman-em x{x+1} y{y+1})\n")
             if(char == 'R'):
@@ -2287,4 +2288,29 @@ with open("problemPACMAN.pddl", "w") as f:
         f.write("\t\t\t(fantasmaB-morto)")
     f.write(")))")
 
-# os.system("fastdownward --alias lama-first domainPACMAN.pddl problemPACMAN.pddl ")
+os.system("/home/software/planners/downward/fast-downward.py --alias lama-first --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
+
+direcoes_mapa = {
+    "up" : "N",
+    "down" : "S",
+    "left" : "W",
+    "right" : "E"
+}
+
+mov = []
+
+regex = re.compile(r"\(move-pacman-([a-zA-Z]+) ")
+
+with open("saida.txt", "r") as saida:
+    for linha in saida:
+        linha = linha.strip()
+        match = regex.match(linha) 
+        if match:
+            direcao = match.group(1)
+            if direcao in direcoes_mapa:
+                mov.append(direcoes_mapa[direcao])
+if mov:
+    print(";".join(mov) + ";0")
+else:
+    print("0")
+
