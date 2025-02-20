@@ -74,7 +74,7 @@
 
     (:action checagem-morto-pos
         :parameters (?px ?py - posicao)
-        :precondition (and (and (or (checar-morto-pos) (fantasmaG-morto)) (not(fantasmaR-liberado))) (pacman-em ?px ?py))
+        :precondition (and (or (checar-morto-pos) (fantasmaG-morto))  (not(fantasmaR-liberado))(pacman-em ?px ?py))
         :effect (and
             (when
                 (or
@@ -192,8 +192,13 @@
                 (and
                     (not(fantasmaR-up))
                     (fantasmaR-right)
+                    (fantasmaG-liberado)
                 )
             )
+            (when
+                (and(fantasmaG-morto)(not(parede-em ?x ?yn)))
+                (and(checar-morto-pos))
+            ) 
         )
     )
 
@@ -217,6 +222,10 @@
                     (fantasmaR-left)
                 )
             )
+            (when
+                (and(fantasmaG-morto)(not(parede-em ?x ?yn)))
+                (and(checar-morto-pos))
+            ) 
         )
     )
 
@@ -240,6 +249,10 @@
                     (fantasmaR-up)
                 )
             )
+            (when
+                (and(fantasmaG-morto)(not(parede-em ?xn ?y)))
+                (and(checar-morto-pos))
+            ) 
         )
     )
 
@@ -263,6 +276,10 @@
                     (fantasmaR-down)
                 )
             )
+            (when
+                (and(fantasmaG-morto)(not(parede-em ?xn ?y)))
+                (and(checar-morto-pos))
+            ) 
         )
     )
     ;-------------------------------------------------FantasmaGreen---------------------------------------------

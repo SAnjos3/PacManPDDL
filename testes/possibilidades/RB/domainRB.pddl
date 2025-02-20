@@ -75,7 +75,7 @@
 
     (:action checagem-morto-pos
         :parameters (?px ?py - posicao)
-        :precondition (and (or(checar-morto-pos)(fantasmaB-morto)) (pacman-em ?px ?py))
+        :precondition (and (checar-morto-pos) (pacman-em ?px ?py))
         :effect (and
             (when
                 (or
@@ -193,6 +193,10 @@
                     (fantasmaR-right)
                 )
             )
+            (when
+                (and(fantasmaB-morto)(not(parede-em ?x ?yn)))
+                (and(checar-morto-pos))
+            )
         )
     )
     (:action move-fantasmaR-down
@@ -214,6 +218,10 @@
                     (not(fantasmaR-down))
                     (fantasmaR-left)
                 )
+            )
+            (when
+                (and(fantasmaB-morto)(not(parede-em ?x ?yn)))
+                (and(checar-morto-pos))
             )
         )
     )
@@ -237,6 +245,10 @@
                     (fantasmaR-up)
                 )
             )
+            (when
+                (and(fantasmaB-morto)(not(parede-em ?xn ?y)))
+                (and(checar-morto-pos))
+            )
         )
     )
     (:action move-fantasmaR-right
@@ -259,6 +271,10 @@
                     (fantasmaR-down)
                 )
             )
+           (when
+                (and(fantasmaB-morto)(not(parede-em ?xn ?y)))
+                (and(checar-morto-pos))
+            ) 
         )
     )
     ;-----------------------------------------------FantasmaB--------------------------------------------------------
