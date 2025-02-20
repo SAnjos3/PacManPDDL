@@ -2187,10 +2187,6 @@ for y, linha in enumerate(mapa):
             ExisteG = True
         if(char == "B"):
             ExisteB = True
-
-for y, linha in enumerate(mapa):
-    for x, char in enumerate(linha):
-        print(f"Posição ({x+1}, {y+1}) -> {char}")
         
 
 with open("domainPACMAN.pddl", "w") as f:
@@ -2262,6 +2258,7 @@ with open("problemPACMAN.pddl", "w") as f:
                 f.write(f"\t\t(frutaG-em x{x+1} y{y+1})\n")
             if(char == '$'):
                 f.write(f"\t\t(frutaB-em x{x+1} y{y+1})\n")
+    f.write("\t\t(fantasmaR-right)\n")
 
     for x in range(1, largura):
         f.write(f"\t\t(inc x{x} x{x+1})\n")
