@@ -62,7 +62,7 @@
                 (pacman-morto)
             )
             (not(checar-morto-pre))
-            (fantasmaG-liberado)
+            (fantasmaR-liberado)
             (when
                 (and (pacman-em ?px ?py) (frutaR-em ?px ?py))
                 (and (frutaR-ativa) (not(frutaG-ativa)) (not(frutaR-em ?px ?py))))
@@ -74,7 +74,7 @@
 
     (:action checagem-morto-pos
         :parameters (?px ?py - posicao)
-        :precondition (and (or (checar-morto-pos) (fantasmaG-morto)) (pacman-em ?px ?py))
+        :precondition (and (and (or (checar-morto-pos) (fantasmaG-morto)) (not(fantasmaR-liberado))) (pacman-em ?px ?py))
         :effect (and
             (when
                 (or
