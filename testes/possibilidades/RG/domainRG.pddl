@@ -102,7 +102,17 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaG-up)
+                    (fantasmaB-down)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-down)
                     (checar-morto-pre)
                 )
             )
@@ -123,7 +133,17 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaG-down)
+                    (fantasmaB-up)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-up)
                     (checar-morto-pre)
                 )
             )
@@ -144,7 +164,17 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaG-left)
+                    (fantasmaB-right)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-right)
                     (checar-morto-pre)
                 )
             )
@@ -165,7 +195,17 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaG-right)
+                    (fantasmaB-left)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-left)
                     (checar-morto-pre)
                 )
             )

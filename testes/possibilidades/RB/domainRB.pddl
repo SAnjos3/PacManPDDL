@@ -107,6 +107,16 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-down)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -124,6 +134,16 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
+                    (fantasmaB-up)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
                     (fantasmaB-up)
                     (checar-morto-pre)
                 )
@@ -149,6 +169,16 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-right)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -170,8 +200,19 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaB-left)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
+
     ;------------------------------------------------------FantasmaR-----------------------------------------------------------
     (:action move-fantasmaR-up
         :parameters (?x ?y ?yn - posicao)

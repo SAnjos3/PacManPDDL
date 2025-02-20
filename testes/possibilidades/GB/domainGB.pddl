@@ -98,10 +98,23 @@
                 (and
                     (not(parede-em ?x ?yn))
                 )
+
                 (and
                     (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
+
                     (pacman-em ?x ?yn)
+                    (fantasmaG-up)
+                    (fantasmaB-down)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
                     (fantasmaG-up)
                     (fantasmaB-down)
                     (checar-morto-pre)
@@ -124,8 +137,19 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
-                    (fantasmaB-up)
                     (fantasmaG-down)
+                    (fantasmaB-up)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaG-down)
+                    (fantasmaB-up)
                     (checar-morto-pre)
                 )
             )
@@ -146,8 +170,19 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-right)
                     (fantasmaG-left)
+                    (fantasmaB-right)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaG-left)
+                    (fantasmaB-right)
                     (checar-morto-pre)
                 )
             )
@@ -168,13 +203,25 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
-                    (fantasmaB-left)
                     (fantasmaG-right)
+                    (fantasmaB-left)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaG-right)
+                    (fantasmaB-left)
                     (checar-morto-pre)
                 )
             )
         )
     )
+
 
     ; ------------------------------------------------FantasmaGreen-----------------------------------------------------------
 

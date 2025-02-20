@@ -88,6 +88,15 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -105,6 +114,15 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?x ?yn)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
                     (checar-morto-pre)
                 )
             )
@@ -128,6 +146,15 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -148,8 +175,18 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
+
 
     ; ------------------------------------------------FantasmaRed---------------------------------
 

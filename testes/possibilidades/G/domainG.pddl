@@ -76,10 +76,22 @@
                 (and
                     (not(parede-em ?x ?yn))
                 )
+
                 (and
                     (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
+
                     (pacman-em ?x ?yn)
+                    (fantasmaG-up)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
                     (fantasmaG-up)
                     (checar-morto-pre)
                 )
@@ -105,6 +117,16 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?x ?yn))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaG-down)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -126,6 +148,16 @@
                     (checar-morto-pre)
                 )
             )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
+                    (fantasmaG-left)
+                    (checar-morto-pre)
+                )
+            )
         )
     )
 
@@ -143,6 +175,16 @@
                     (not(pacman-liberado))
 
                     (pacman-em ?xn ?y)
+                    (fantasmaG-right)
+                    (checar-morto-pre)
+                )
+            )
+            (when
+                (and(parede-em ?xn ?y))
+                (and
+                    (not(pacman-liberado))
+
+                    (pacman-em ?x ?y)
                     (fantasmaG-right)
                     (checar-morto-pre)
                 )
