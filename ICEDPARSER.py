@@ -3,7 +3,7 @@ import os
 import re
 
 domainRGB = """
-            (:predicates
+        (:predicates
         ; Localização
         (pacman-em ?px ?py - posicao)
         (fantasmaR-em ?px ?py - posicao)
@@ -12,6 +12,11 @@ domainRGB = """
         (parede-em ?px ?py - posicao)
         (portal-link ?x ?y ?px ?py - posicao)
         (portal-em ?x ?y - posicao)
+        (ice-link-up ?x ?y ?fx ?fy)
+        (ice-link-down ?x ?y ?fx ?fy)
+        (ice-link-right ?x ?y ?fx ?fy)
+        (ice-link-left ?x ?y ?fx ?fy)
+        (gelo-em ?x ?y)
 
         ; Frutas
         (frutaR-em ?px ?py - posicao)
@@ -56,6 +61,34 @@ domainRGB = """
     )
     ;-----------------------------------------AÇÕES DE CHECAGEM-----------------------------------------------
 
+    (:action comer-fantasma-green
+        :parameters (?px ?py - posicao)
+        :precondition(and (pacman-em ?px ?py)(fantasmaG-em ?px ?py) (frutaG-ativa)
+            (not(frutaB-ativa))
+            (not(frutaR-ativa)))
+        :effect(and (check-turno)(fantasmaG-morto)
+            (not(frutaG-ativa))
+            (not(fantasmaG-em ?px ?py)))
+    )
+    (:action comer-fantasma-red
+        :parameters (?px ?py - posicao)
+        :precondition(and (pacman-em ?px ?py)(fantasmaR-em ?px ?py) (frutaR-ativa)
+            (not(frutaB-ativa))
+            (not(frutaG-ativa)))
+        :effect(and (check-turno)(fantasmaR-morto)
+            (not(frutaR-ativa))
+            (not(fantasmaR-em ?px ?py)))
+    )
+
+    (:action comer-fantasma-blue
+        :parameters (?px ?py - posicao)
+        :precondition(and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa)
+            (not(frutaR-ativa))
+            (not(frutaG-ativa)))
+        :effect(and (check-turno)(fantasmaB-morto)
+            (not(frutaB-ativa))
+            (not(fantasmaB-em ?px ?py)))
+    )
     (:action checagem-morto-pre
         :parameters (?px ?py - posicao)
         :precondition (and
@@ -76,37 +109,25 @@ domainRGB = """
                 (pacman-morto)
             )
 
-            ;; Comer fruta R se presente
+            ; Comer fruta R se presente
             (when
                 (and (pacman-em ?px ?py) (frutaR-em ?px ?py))
-                (and (frutaR-ativa) (not(frutaR-em ?px ?py)) (not(frutaB-ativa)) (not(frutaG-ativa)))
+                (and (frutaR-ativa) (not(frutaR-em ?px ?py))
+                    (not(frutaB-ativa)) (not(frutaG-ativa)))
             )
-            ;; Comer fruta G se presente
+            ; Comer fruta G se presente
             (when
                 (and (pacman-em ?px ?py) (frutaG-em ?px ?py))
-                (and (frutaG-ativa) (not(frutaG-em ?px ?py)) (not(frutaB-ativa)) (not(frutaR-ativa)))
+                (and (frutaG-ativa) (not(frutaG-em ?px ?py))
+                    (not(frutaB-ativa)) (not(frutaR-ativa)))
             )
-            ;; Comer fruta B se presente
+            ; Comer fruta B se presente
             (when
                 (and (pacman-em ?px ?py) (frutaB-em ?px ?py))
-                (and (frutaB-ativa) (not(frutaB-em ?px ?py)) (not(frutaR-ativa)) (not(frutaG-ativa)))
-            )
-            (when(and (pacman-em ?px ?py)(fantasmaG-em ?px ?py) (frutaG-ativa))
-                (and (check-turno)(fantasmaG-morto)
-                    (not(frutaG-ativa))
-                    (not(fantasmaG-em ?px ?py)))
-            )
-            (when(and (pacman-em ?px ?py)(fantasmaR-em ?px ?py) (frutaR-ativa))
-                (and (check-turno)(fantasmaR-morto)
-                    (not(frutaR-ativa))
-                    (not(fantasmaR-em ?px ?py)))
+                (and (frutaB-ativa) (not(frutaB-em ?px ?py))
+                    (not(frutaR-ativa)) (not(frutaG-ativa)))
             )
 
-            (when(and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa))
-                (and (check-turno)(fantasmaB-morto)
-                    (not(frutaB-ativa))
-                    (not(fantasmaB-em ?px ?py)))
-            )
             (check-turno)
 
         )
@@ -132,22 +153,6 @@ domainRGB = """
                 )
                 (pacman-morto)
             )
-            (when(and (pacman-em ?px ?py)(fantasmaG-em ?px ?py) (frutaG-ativa))
-                (and (check-turno)(fantasmaG-morto)
-                    (not(frutaG-ativa))
-                    (not(fantasmaG-em ?px ?py)))
-            )
-            (when(and (pacman-em ?px ?py)(fantasmaR-em ?px ?py) (frutaR-ativa))
-                (and (check-turno)(fantasmaR-morto)
-                    (not(frutaR-ativa))
-                    (not(fantasmaR-em ?px ?py)))
-            )
-
-            (when(and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa))
-                (and (check-turno)(fantasmaB-morto)
-                    (not(frutaB-ativa))
-                    (not(fantasmaB-em ?px ?py)))
-            )
             (check-turno)
         )
     )
@@ -155,6 +160,142 @@ domainRGB = """
     ;=================================================================================================
     ; AÇÕES DO PACMAN
     ;=================================================================================================
+    ;---------------------------------------Gelo--------------------------------------
+    (:action move-ice-up
+        :parameters (?x ?y ?yn ?fx ?fy - posicao)
+        :precondition (and
+            (turno-pacman)
+            (not(check-turno))
+            (pacman-em ?x ?y)
+            (dec ?y ?yn)
+            (gelo-em ?x ?yn)
+            (ice-link-up ?x ?y ?fx ?fy))
+        :effect (and
+            (when
+                (not(parede-em ?fx ?fy))
+                (and
+                    (not (pacman-em ?x ?y))
+                    (pacman-em ?fx ?fy)
+                    (fantasmaB-down)
+                    (fantasmaG-up)
+                    (check-turno)
+                )
+            )
+            (when(and(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn)))
+                (and(pacman-morto)))
+            (when
+                (parede-em ?fx ?fy)
+                (and
+                    (fantasmaB-down)
+                    (fantasmaG-up)
+                    (check-turno)
+
+                )
+            )
+        )
+    )
+
+    (:action move-ice-down
+        :parameters (?x ?y ?yn ?fx ?fy - posicao)
+        :precondition (and
+            (turno-pacman)
+            (not(check-turno))
+            (pacman-em ?x ?y)
+            (inc ?y ?yn)
+            (gelo-em ?x ?yn)
+            (ice-link-down ?x ?y ?fx ?fy))
+        :effect (and
+            (when
+                (not(parede-em ?fx ?fy))
+                (and
+                    (not (pacman-em ?x ?y))
+                    (pacman-em ?fx ?fy)
+                    (fantasmaB-up)
+                    (fantasmaG-down)
+                    (check-turno)
+
+                )
+            )
+            (when(and(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn)))
+                (and(pacman-morto)))
+            (when
+                (parede-em ?fx ?fy)
+                (and
+                    (fantasmaB-up)
+                    (fantasmaG-down)
+                    (check-turno)
+                )
+            )
+        )
+    )
+
+    (:action move-ice-left
+        :parameters (?x ?y ?xn ?fx ?fy - posicao)
+        :precondition (and
+            (turno-pacman)
+            (not(check-turno))
+            (pacman-em ?x ?y)
+            (dec ?x ?xn)
+            (gelo-em ?xn ?y)
+            (ice-link-left ?x ?y ?fx ?fy))
+        :effect (and
+            (when
+                (not(parede-em ?fx ?fy))
+                (and
+                    (not (pacman-em ?x ?y))
+                    (pacman-em ?fx ?fy)
+                    (fantasmaB-right)
+                    (fantasmaG-left)
+                    (check-turno)
+
+                )
+            )
+            (when(and(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y)))
+                (and(pacman-morto)))
+            (when
+                (parede-em ?fx ?fy)
+                (and
+                    (fantasmaB-right)
+                    (fantasmaG-left)
+                    (check-turno)
+                )
+            )
+        )
+    )
+
+    (:action move-ice-right
+        :parameters (?x ?y ?xn ?fx ?fy - posicao)
+        :precondition (and
+            (turno-pacman)
+            (not(check-turno))
+            (pacman-em ?x ?y)
+            (inc ?x ?xn)
+            (gelo-em ?xn ?y)
+            (ice-link-right ?x ?y ?fx ?fy))
+        :effect (and
+            (when
+                (not(parede-em ?fx ?fy))
+                (and
+                    (not (pacman-em ?x ?y))
+                    (pacman-em ?fx ?fy)
+                    (fantasmaB-left)
+                    (fantasmaG-right)
+                    (check-turno)
+                )
+            )
+            (when(and(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y)))
+                (and(pacman-morto)))
+            (when
+                (parede-em ?fx ?fy)
+                (and
+                    (fantasmaB-left)
+                    (fantasmaG-right)
+                    (check-turno)
+                )
+            )
+        )
+    )
+    ;------------------------------------------Portal-----------------------------------------
     (:action usar-portal-up
         :parameters (?x ?y ?yn ?px ?py)
         :precondition (and (dec ?y ?yn) (portal-em ?x ?yn) (portal-link ?x ?yn ?px ?py) (turno-pacman)
@@ -165,7 +306,7 @@ domainRGB = """
             (fantasmaB-down)
             (fantasmaG-up)
             (check-turno)
-            (when(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn))
+            (when(and(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn)))
                 (and(pacman-morto)))
         )
     )
@@ -179,7 +320,7 @@ domainRGB = """
             (fantasmaB-up)
             (fantasmaG-down)
             (check-turno)
-            (when(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn))
+            (when(and(or(fantasmaB-em ?x ?yn) (fantasmaG-em ?x ?yn) (fantasmaR-em ?x ?yn)))
                 (and(pacman-morto)))
         )
     )
@@ -193,7 +334,7 @@ domainRGB = """
             (fantasmaB-left)
             (fantasmaG-right)
             (check-turno)
-            (when(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y))
+            (when(and(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y)))
                 (and(pacman-morto)))
         )
     )
@@ -207,10 +348,11 @@ domainRGB = """
             (fantasmaB-right)
             (fantasmaG-left)
             (check-turno)
-            (when(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y))
+            (when(and(or(fantasmaB-em ?xn ?y) (fantasmaG-em ?xn ?y) (fantasmaR-em ?xn ?y)))
                 (and(pacman-morto)))
         )
     )
+    ;---------------------------------Normal----------------------------------------
     (:action move-pacman-up
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (turno-pacman)
@@ -220,6 +362,7 @@ domainRGB = """
                 (and
                     (not(parede-em ?x ?yn))
                     (not(portal-em ?x ?yn))
+                    (not(gelo-em ?x ?yn))
                 )
 
                 (and
@@ -250,6 +393,7 @@ domainRGB = """
                 (and
                     (not(parede-em ?x ?yn))
                     (not(portal-em ?x ?yn))
+                    (not(gelo-em ?x ?yn))
                 )
 
                 (and
@@ -281,6 +425,7 @@ domainRGB = """
                 (and
                     (not(parede-em ?xn ?y))
                     (not(portal-em ?xn ?y))
+                    (not(gelo-em ?xn ?y))
                 )
 
                 (and
@@ -312,6 +457,7 @@ domainRGB = """
                 (and
                     (not(parede-em ?xn ?y))
                     (not(portal-em ?xn ?y))
+                    (not(gelo-em ?xn ?y))
                 )
 
                 (and
@@ -336,7 +482,7 @@ domainRGB = """
     )
     ;-------------------------------------------------FantasmaRed----------------------------------------------
 
-    (:action move-fantasmaR-up
+    (:action fantasmaR-up
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaR-em ?x ?y)
             (not(check-turno)) (not(fantasmaR-morto)) (turno-red) (fantasmaR-up) (dec ?y ?yn))
@@ -359,7 +505,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaR-down
+    (:action fantasmaR-down
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaR-em ?x ?y)
             (not(check-turno)) (turno-red) (not(fantasmaR-morto)) (fantasmaR-down) (inc ?y ?yn))
@@ -383,7 +529,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaR-left
+    (:action fantasmaR-left
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaR-em ?x ?y)
             (not(check-turno)) (turno-red) (not(fantasmaR-morto)) (fantasmaR-left) (dec ?x ?xn))
@@ -407,7 +553,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaR-right
+    (:action fantasmaR-right
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaR-em ?x ?y) (not(check-turno))(turno-red) (not(fantasmaR-morto)) (fantasmaR-right) (inc ?x ?xn))
         :effect (and
@@ -430,7 +576,7 @@ domainRGB = """
         )
     )
     ;-------------------------------------------------FantasmaGreen---------------------------------------------
-    (:action move-fantasmaG-up
+    (:action fantasmaG-up
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaG-em ?x ?y)
             (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-up) (dec ?y ?yn))
@@ -454,7 +600,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaG-down
+    (:action fantasmaG-down
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaG-em ?x ?y)
             (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-down) (inc ?y ?yn))
@@ -478,7 +624,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaG-left
+    (:action fantasmaG-left
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaG-em ?x ?y)
             (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-left) (dec ?x ?xn))
@@ -502,7 +648,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaG-right
+    (:action fantasmaG-right
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaG-em ?x ?y)
             (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-right) (inc ?x ?xn))
@@ -530,7 +676,7 @@ domainRGB = """
         )
     )
     ;---------------------------------------------FantasmaBlue-------------------------------------------------------------
-    (:action move-fantasmaB-up
+    (:action fantasmaB-up
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaB-em ?x ?y)
             (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-up) (dec ?y ?yn))
@@ -556,7 +702,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaB-down
+    (:action fantasmaB-down
         :parameters (?x ?y ?yn - posicao)
         :precondition (and (fantasmaB-em ?x ?y)
             (not(check-turno))(turno-blue) (not(fantasmaB-morto)) (fantasmaB-down) (inc ?y ?yn))
@@ -581,7 +727,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaB-left
+    (:action fantasmaB-left
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaB-em ?x ?y)
             (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-left) (dec ?x ?xn))
@@ -606,7 +752,7 @@ domainRGB = """
         )
     )
 
-    (:action move-fantasmaB-right
+    (:action fantasmaB-right
         :parameters (?x ?y ?xn - posicao)
         :precondition (and (fantasmaB-em ?x ?y)
             (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-right) (inc ?x ?xn))
@@ -788,6 +934,8 @@ with open("problemPACMAN.pddl", "w") as f:
                 f.write(f"\t\t(frutaB-em x{x+1} y{y+1})\n")
             if(char == "O"):
                 f.write(f"\t\t(portal-em x{x+1} y{y+1})\n")
+            if(char == "I"):
+                f.write(f"\t\t(gelo-em x{x+1} y{y+1})\n")
     if(ExisteR == False):
         f.write(f"\t\t(fantasmaR-morto)\n")
     if(ExisteG == False):
@@ -854,7 +1002,7 @@ with open("problemPACMAN.pddl", "w") as f:
         f.write("\t\t\t(fantasmaB-morto)")
     f.write(")))")
 
-os.system("/home/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
+os.system("/home/anjos/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
 
 direcoes_mapa = {
     "up" : "N",
@@ -865,7 +1013,7 @@ direcoes_mapa = {
 
 mov = []
 
-regex = re.compile(r"\((move-pacman-|usar-portal-)([a-zA-Z]+) ")
+regex = re.compile(r"\((move-pacman-|usar-portal-|move-ice-)([a-zA-Z]+) ")
 
 with open("saida.txt", "r") as saida:
     for linha in saida:
