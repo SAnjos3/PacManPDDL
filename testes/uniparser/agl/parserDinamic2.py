@@ -84,6 +84,15 @@ actionsBase = """
             (and (pacman-perigo ?px ?py))
             (and(pacman-morto))
         )
+        (when(and (pacman-em ?px ?py) (frutaR-em ?px ?py))
+                (and (frutaR-ativa))
+            )
+        (when(and (pacman-em ?px ?py) (frutaG-em ?px ?py))
+                (and (frutaG-ativa))
+            )
+        (when(and (pacman-em ?px ?py) (frutaB-em ?px ?py))
+                (and (frutaB-ativa))
+            )
         (check-turno)
     )
 )
@@ -113,7 +122,8 @@ actionsBase = """
         (not(check-turno))
         (pacman-em ?x ?y)
         (dec ?y ?yn)
-        (pode-mover ?x ?yn))
+        (pode-mover ?x ?yn)
+    )
     :effect (and
         (not(pacman-em ?x ?y))
         (pacman-em ?x ?yn)
@@ -130,7 +140,8 @@ actionsBase = """
         (not(check-turno))
         (pacman-em ?x ?y)
         (inc ?y ?yn)
-        (pode-mover ?x ?yn))
+        (pode-mover ?x ?yn)
+    )
     :effect (and
         (not(pacman-em ?x ?y))
         (pacman-em ?x ?yn)
@@ -147,7 +158,8 @@ actionsBase = """
         (not(check-turno))
         (pacman-em ?x ?y)
         (dec ?x ?xn)
-        (pode-mover ?xn ?y))
+        (pode-mover ?xn ?y)
+    )
     :effect (and
         (not(pacman-em ?x ?y))
         (pacman-em ?xn ?y)
@@ -164,7 +176,8 @@ actionsBase = """
         (not(check-turno))
         (pacman-em ?x ?y)
         (inc ?x ?xn)
-        (pode-mover ?xn ?y))
+        (pode-mover ?xn ?y)
+    )
     :effect (and
         (not(pacman-em ?x ?y))
         (pacman-em ?xn ?y)
@@ -173,6 +186,7 @@ actionsBase = """
         (check-turno)
     )
 )
+
 (:action dummy-move-up
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
@@ -180,13 +194,15 @@ actionsBase = """
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?y ?yn)
-        (parede-em ?x ?yn))
+        (parede-em ?x ?yn)
+    )
     :effect (and
         (fantasmaB-down)
         (fantasmaG-up)
         (check-turno)
     )
 )
+
 (:action dummy-move-down
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
@@ -194,13 +210,15 @@ actionsBase = """
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?y ?yn)
-        (parede-em ?x ?yn))
+        (parede-em ?x ?yn)
+    )
     :effect (and
         (fantasmaB-up)
         (fantasmaG-down)
         (check-turno)
     )
 )
+
 (:action dummy-move-left
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
@@ -208,13 +226,15 @@ actionsBase = """
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?x ?xn)
-        (parede-em ?xn ?y))
+        (parede-em ?xn ?y)
+    )
     :effect (and
         (fantasmaB-right)
         (fantasmaG-left)
         (check-turno)
     )
 )
+
 (:action dummy-move-right
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
@@ -222,77 +242,91 @@ actionsBase = """
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?x ?xn)
-        (parede-em ?xn ?y))
+        (parede-em ?xn ?y)
+    )
     :effect (and
         (fantasmaB-left)
         (fantasmaG-right)
         (check-turno)
     )
 )
+
 (:action avancar-turno-pacman
     :precondition (and 
         (check-turno)
         (turno-pacman)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-pacman))
-        (turno-pre))
+        (turno-pre)
+    )
 )
 
 (:action avancar-turno-pre
     :precondition (and 
         (check-turno)
         (turno-pre)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-pre))
-        (turno-red))
+        (turno-red)
+    )
 )
 
 (:action avancar-turno-red
     :precondition (and 
         (check-turno)
         (turno-red)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-red))
-        (turno-green))
+        (turno-green)
+    )
 )
 
 (:action avancar-turno-green
     :precondition (and 
         (check-turno)
         (turno-green)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-green))
-        (turno-blue))
+        (turno-blue)
+    )
 )
 
 (:action avancar-turno-blue
     :precondition (and 
         (check-turno)
         (turno-blue)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-blue))
-        (turno-pos))
+        (turno-pos)
+    )
 )
 
 (:action avancar-turno-pos
     :precondition (and 
         (check-turno)
         (turno-pos)
-        (not (pacman-morto)))
+        (not (pacman-morto))
+    )
     :effect (and
         (not (check-turno))
         (not (turno-pos))
-        (turno-pacman))
+        (turno-pacman)
+    )
 )
 """
 
@@ -466,12 +500,6 @@ actionsGelo = """
 """
 
 actionsRed = """
-(:action comer-fruta-red
-        :parameters (?px ?py - posicao)
-        :precondition(and (pacman-em ?px ?py) (frutaR-em ?px ?py))
-        :effect(and (frutaR-ativa) (not(frutaR-em ?px ?py))
-            (not(frutaB-ativa)) (not(frutaG-ativa)))
-    )
 (:action comer-fantasma-red
     :parameters (?px ?py - posicao)
     :precondition(and (pacman-em ?px ?py)(fantasmaR-em ?px ?py) (frutaR-ativa)
@@ -575,12 +603,6 @@ actionsRed = """
 """
 
 actionsGreen = """
-(:action comer-fruta-green
-        :parameters (?px ?py - posicao)
-        :precondition(and (pacman-em ?px ?py) (frutaG-em ?px ?py))
-        :effect(and (frutaG-ativa) (not(frutaG-em ?px ?py))
-            (not(frutaB-ativa)) (not(frutaR-ativa)))
-    )
 (:action comer-fantasma-green
     :parameters (?px ?py - posicao)
     :precondition(and (pacman-em ?px ?py)(fantasmaG-em ?px ?py) (frutaG-ativa)
@@ -688,12 +710,6 @@ actionsGreen = """
 """
 
 actionsBlue = """
-(:action comer-fruta-blue
-        :parameters (?px ?py - posicao)
-        :precondition(and (pacman-em ?px ?py) (frutaB-em ?px ?py))
-        :effect(and (frutaB-ativa) (not(frutaB-em ?px ?py))
-            (not(frutaR-ativa)) (not(frutaG-ativa)))
-    )
 (:action comer-fantasma-blue
     :parameters (?px ?py - posicao)
     :precondition(and (pacman-em ?px ?py) (fantasmaB-em ?px ?py) (frutaB-ativa)
@@ -997,7 +1013,7 @@ with open("problemDESEMPENHO.pddl", "w") as f:
         f.write("\t\t\t(fantasmaB-morto)")
     f.write(")))")
 
-os.system("/home/anjos/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
+os.system("/home/anjos/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainDESEMPENHO.pddl problemDESEMPENHO.pddl > log.txt")
 
 direcoes_mapa = {
     "up" : "N",
