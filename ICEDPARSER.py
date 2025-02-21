@@ -951,30 +951,30 @@ with open("problemPACMAN.pddl", "w") as f:
 
     for y in range(altura):
         for x in range(largura):
-            if mapa[y][x] in [" ", "P"]:
-                if y > 0 and mapa[y-1][x] == "I":  # Cima
-                    fy = y
-                    while fy < altura and mapa[fy][x] == "I":
-                        fy += 1
-                    f.write(f"\t\t(ice-link-up x{x+1} y{y+1} x{x+1} y{fy})\n")
-
-                if y < altura - 1 and mapa[y+1][x] == "I":  # Baixo
-                    fy = y
+            if mapa[y][x] in [" ", "P", "R", "G", "B", "!", "$", "@"]:
+                if y > 0 and mapa[y-1][x] == "I":
+                    fy = y - 1
                     while fy >= 0 and mapa[fy][x] == "I":
                         fy -= 1
-                    f.write(f"\t\t(ice-link-down x{x+1} y{y+1} x{x+1} y{fy+2})\n")
+                    f.write(f"\t\t(ice-link-up x{x+1} y{y+1} x{x+1} y{fy+1})\n")
 
-                if x > 0 and mapa[y][x-1] == "I":  # Esquerda
-                    fx = x
-                    while fx < largura and mapa[y][fx] == "I":
-                        fx += 1
-                    f.write(f"\t\t(ice-link-left x{x+1} y{y+1} x{fx} y{y+1})\n")
+                if y < altura - 1 and mapa[y+1][x] == "I":
+                    fy = y + 1
+                    while fy < altura and mapa[fy][x] == "I":
+                        fy += 1
+                    f.write(f"\t\t(ice-link-down x{x+1} y{y+1} x{x+1} y{fy+1})\n")
 
-                if x < largura - 1 and mapa[y][x+1] == "I":  # Direita
-                    fx = x
+                if x > 0 and mapa[y][x-1] == "I":
+                    fx = x - 1
                     while fx >= 0 and mapa[y][fx] == "I":
                         fx -= 1
-                    f.write(f"\t\t(ice-link-right x{x+1} y{y+1} x{fx+2} y{y+1})\n")
+                    f.write(f"\t\t(ice-link-left x{x+1} y{y+1} x{fx+1} y{y+1})\n")
+
+                if x < largura - 1 and mapa[y][x+1] == "I":
+                    fx = x + 1
+                    while fx < largura and mapa[y][fx] == "I":
+                        fx += 1
+                    f.write(f"\t\t(ice-link-right x{x+1} y{y+1} x{fx+1} y{y+1})\n")
 
 
     for x in range(1, largura):
@@ -1002,7 +1002,7 @@ with open("problemPACMAN.pddl", "w") as f:
         f.write("\t\t\t(fantasmaB-morto)")
     f.write(")))")
 
-os.system("/home/anjos/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
+os.system("/home/software/planners/downward/fast-downward.py --alias lama-first --overall-time-limit 30 --plan-file saida.txt domainPACMAN.pddl problemPACMAN.pddl > log.txt")
 
 direcoes_mapa = {
     "up" : "N",
