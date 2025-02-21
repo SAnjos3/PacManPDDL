@@ -859,8 +859,8 @@ ExisteB = False
 portais = []
 for y, linha in enumerate(mapa):
     for x, char in enumerate(linha):
-        if(char == "O"):
-            portais.append(f"x{x+1}y{y+1}")
+        if char == "O":
+            portais.append((x + 1, y + 1))
         # if(char == "I"):
         #     exit(0)
         if(char == "R"):
@@ -944,10 +944,12 @@ with open("problemPACMAN.pddl", "w") as f:
         f.write(f"\t\t(fantasmaB-morto)\n")
             
 
-    if(portais):                
-        f.write(f"\t\t(portal-link x{portais[0][1]} y{portais[0][3]} x{portais[1][1]} y{portais[1][3]})\n")
-        f.write(f"\t\t(portal-link x{portais[1][1]} y{portais[1][3]} x{portais[0][1]} y{portais[0][3]})\n")
-
+    if len(portais) % 2 == 0:
+        for i in range(0, len(portais), 2):
+            xi, yi = portais[i]
+            fxi, fyi = portais[i + 1]
+            f.write(f"\t\t(portal-link x{xi} y{yi} x{fxi} y{fyi})\n")
+            f.write(f"\t\t(portal-link x{fxi} y{fyi} x{xi} y{yi})\n")
 
     for y in range(altura):
         for x in range(largura):
