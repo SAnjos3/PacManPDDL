@@ -4,11 +4,20 @@ import re
     
 predicadosBase = """
 (:predicates
+    (turno-pacman) 
+    (turno-pre) 
+    (turno-red) 
+    (turno-green)
+    (turno-blue) 
+    (turno-pos)
+
     (pacman-em ?px ?py - posicao)
     (parede-em ?px ?py - posicao)
     (frutaR-em ?px ?py - posicao)
     (frutaG-em ?px ?py - posicao)
     (frutaB-em ?px ?py - posicao)
+    (pode-mover ?x ?y - posicao)
+    (pacman-perigo ?px ?py - posicao)
     (frutaR-ativa)
     (frutaG-ativa)
     (frutaB-ativa)
@@ -50,23 +59,23 @@ predicadosBlue = """
 actionsBase = """
     (:action pass-red
         :parameters ()
-        :precondition (and (fantasmaR-morto)(= (turno) 2))
+        :precondition (and (fantasmaR-morto)(turno-red))
         :effect (and (check-turno))
     )
     (:action pass-green
         :parameters ()
-        :precondition (and (fantasmaG-morto)(= (turno) 3))
+        :precondition (and (fantasmaG-morto)(turno-green))
         :effect (and (check-turno))
     )
     (:action pass-blue
         :parameters ()
-        :precondition (and (fantasmaB-morto)(= (turno) 4))
+        :precondition (and (fantasmaB-morto)(turno-blue))
         :effect (and (check-turno))
     )
     (:action checagem-morto-pre
     :parameters (?px ?py - posicao)
     :precondition (and
-        (=(turno)1)
+        (turno-pre)
         (pacman-em ?px ?py)
         (not(check-turno))
     )
@@ -83,7 +92,7 @@ actionsBase = """
     :parameters (?px ?py - posicao)
     :precondition (and
         (pacman-em ?px ?py)
-        (=(turno)5)
+        (turno-pos)
         (not(check-turno))
     )
 
@@ -100,7 +109,7 @@ actionsBase = """
 (:action move-pacman-up
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not(check-turno))
         (pacman-em ?x ?y)
         (dec ?y ?yn)
@@ -117,7 +126,7 @@ actionsBase = """
 (:action move-pacman-down
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not(check-turno))
         (pacman-em ?x ?y)
         (inc ?y ?yn)
@@ -134,7 +143,7 @@ actionsBase = """
 (:action move-pacman-left
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not(check-turno))
         (pacman-em ?x ?y)
         (dec ?x ?xn)
@@ -151,7 +160,7 @@ actionsBase = """
 (:action move-pacman-right
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not(check-turno))
         (pacman-em ?x ?y)
         (inc ?x ?xn)
@@ -167,7 +176,7 @@ actionsBase = """
 (:action dummy-move-up
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?y ?yn)
@@ -181,7 +190,7 @@ actionsBase = """
 (:action dummy-move-down
     :parameters (?x ?y ?yn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?y ?yn)
@@ -195,7 +204,7 @@ actionsBase = """
 (:action dummy-move-left
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?x ?xn)
@@ -209,7 +218,7 @@ actionsBase = """
 (:action dummy-move-right
     :parameters (?x ?y ?xn - posicao)
     :precondition (and 
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?x ?xn)
@@ -220,25 +229,77 @@ actionsBase = """
         (check-turno)
     )
 )
-
-(:action avancar-turno
-    :parameters ()
+(:action avancar-turno-pacman
     :precondition (and 
         (check-turno)
+        (turno-pacman)
         (not (pacman-morto)))
     :effect (and
         (not (check-turno))
-        (increase (turno) 1)
-        (when (>= (turno) 6)
-            (assign (turno) 0))
-    )
+        (not (turno-pacman))
+        (turno-pre))
+)
+
+(:action avancar-turno-pre
+    :precondition (and 
+        (check-turno)
+        (turno-pre)
+        (not (pacman-morto)))
+    :effect (and
+        (not (check-turno))
+        (not (turno-pre))
+        (turno-red))
+)
+
+(:action avancar-turno-red
+    :precondition (and 
+        (check-turno)
+        (turno-red)
+        (not (pacman-morto)))
+    :effect (and
+        (not (check-turno))
+        (not (turno-red))
+        (turno-green))
+)
+
+(:action avancar-turno-green
+    :precondition (and 
+        (check-turno)
+        (turno-green)
+        (not (pacman-morto)))
+    :effect (and
+        (not (check-turno))
+        (not (turno-green))
+        (turno-blue))
+)
+
+(:action avancar-turno-blue
+    :precondition (and 
+        (check-turno)
+        (turno-blue)
+        (not (pacman-morto)))
+    :effect (and
+        (not (check-turno))
+        (not (turno-blue))
+        (turno-pos))
+)
+
+(:action avancar-turno-pos
+    :precondition (and 
+        (check-turno)
+        (turno-pos)
+        (not (pacman-morto)))
+    :effect (and
+        (not (check-turno))
+        (not (turno-pos))
+        (turno-pacman))
 )
 """
 
 actionsPortal = """
 (:action usar-portal-up
     :parameters (?x ?y ?yn ?px ?py - posicao)
-    :precondition (and (= (turno) 0) (dec ?y ?yn) (portal-em ?x ?yn) (portal-link ?x ?yn ?px ?py) 
+    :precondition (and (turno-pacman) (dec ?y ?yn) (portal-em ?x ?yn) (portal-link ?x ?yn ?px ?py) 
         (not(check-turno)) (pacman-em ?x ?y))
     :effect (and
         (not (pacman-em ?x ?y))
@@ -252,7 +313,7 @@ actionsPortal = """
 )
 (:action usar-portal-down
     :parameters (?x ?y ?yn ?px ?py - posicao)
-    :precondition (and  (= (turno) 0) (inc ?y ?yn) (portal-em ?x ?yn)(portal-link ?x ?yn ?px ?py) 
+    :precondition (and  (turno-pacman) (inc ?y ?yn) (portal-em ?x ?yn)(portal-link ?x ?yn ?px ?py) 
         (not(check-turno)) (pacman-em ?x ?y))
     :effect (and
         (not (pacman-em ?x ?y))
@@ -266,7 +327,7 @@ actionsPortal = """
 )
 (:action usar-portal-right
     :parameters (?x ?y ?xn ?px ?py - posicao)
-    :precondition (and  (= (turno) 0) (inc ?x ?xn)(portal-em ?xn ?y) (portal-link ?xn ?y ?px ?py) 
+    :precondition (and  (turno-pacman) (inc ?x ?xn)(portal-em ?xn ?y) (portal-link ?xn ?y ?px ?py) 
         (not(check-turno)) (pacman-em ?x ?y))
     :effect (and
         (not (pacman-em ?x ?y))
@@ -280,7 +341,7 @@ actionsPortal = """
 )
 (:action usar-portal-left
     :parameters (?x ?y ?xn ?px ?py - posicao)
-    :precondition (and (= (turno) 0) (dec ?x ?xn)(portal-em ?xn ?y) (portal-link ?xn ?y ?px ?py) 
+    :precondition (and (turno-pacman) (dec ?x ?xn)(portal-em ?xn ?y) (portal-link ?xn ?y ?px ?py) 
         (not(check-turno)) (pacman-em ?x ?y))
     :effect (and
         (not (pacman-em ?x ?y))
@@ -298,7 +359,7 @@ actionsGelo = """
 (:action move-ice-up
     :parameters (?x ?y ?yn ?fx ?fy - posicao)
     :precondition (and
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?y ?yn)
@@ -325,7 +386,7 @@ actionsGelo = """
 (:action move-ice-down
     :parameters (?x ?y ?yn ?fx ?fy - posicao)
     :precondition (and
-        (= (turno) 0)
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?y ?yn)
@@ -349,43 +410,57 @@ actionsGelo = """
     )
 )
 
-(:action usar-portal-right
-    :parameters (?x ?y ?xn ?px ?py - posicao)
-    :precondition (and 
-        (= (turno) 0)
+(:action move-ice-right
+    :parameters (?x ?y ?xn ?fx ?fy - posicao)
+    :precondition (and
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (inc ?x ?xn)
-        (portal-em ?xn ?y)
-        (portal-link ?xn ?y ?px ?py))
+        (gelo-em ?xn ?y)
+        (ice-link-right ?x ?y ?fx ?fy))
     :effect (and
-        (not (pacman-em ?x ?y))
-        (pacman-em ?px ?py)
-        (fantasmaB-left)
-        (fantasmaG-right)
-        (check-turno)
-        (when (and (pacman-perigo ?xn ?y))
+        (when (and (not (parede-em ?fx ?fy)))
+            (and
+                (not (pacman-em ?x ?y))
+                (pacman-em ?fx ?fy)
+                (fantasmaB-left)
+                (fantasmaG-right)
+                (check-turno)))
+        (when (and (pacman-perigo ?x ?xn))
             (and (pacman-morto)))
+        (when (and (parede-em ?fx ?fy))
+            (and
+                (fantasmaB-left)
+                (fantasmaG-right)
+                (check-turno)))
     )
 )
 
-(:action usar-portal-left
-    :parameters (?x ?y ?xn ?px ?py - posicao)
-    :precondition (and 
-        (= (turno) 0)
+(:action move-ice-left
+    :parameters (?x ?y ?xn ?fx ?fy - posicao)
+    :precondition (and
+        (turno-pacman)
         (not (check-turno))
         (pacman-em ?x ?y)
         (dec ?x ?xn)
-        (portal-em ?xn ?y)
-        (portal-link ?xn ?y ?px ?py))
+        (gelo-em ?xn ?y)
+        (ice-link-left ?x ?y ?fx ?fy))
     :effect (and
-        (not (pacman-em ?x ?y))
-        (pacman-em ?px ?py)
-        (fantasmaB-right)
-        (fantasmaG-left)
-        (check-turno)
-        (when (and (pacman-perigo ?xn ?y))
+        (when (and (not (parede-em ?fx ?fy)))
+            (and
+                (not (pacman-em ?x ?y))
+                (pacman-em ?fx ?fy)
+                (fantasmaB-right)
+                (fantasmaG-left)
+                (check-turno)))
+        (when (and (pacman-perigo ?x ?xn))
             (and (pacman-morto)))
+        (when (and (parede-em ?fx ?fy))
+            (and
+                (fantasmaB-right)
+                (fantasmaG-left)
+                (check-turno)))
     )
 )
 """
@@ -409,7 +484,7 @@ actionsRed = """
 
 (:action fantasmaR-up
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (= (turno) 2) (fantasmaR-em ?x ?y)
+    :precondition (and (turno-red) (fantasmaR-em ?x ?y)
         (not(check-turno)) (not(fantasmaR-morto)) (fantasmaR-up) (dec ?y ?yn))
     :effect (and
         (when
@@ -432,7 +507,7 @@ actionsRed = """
 
 (:action fantasmaR-down
     :parameters (?x ?y ?yn - posicao)
-    :precondition (and (= (turno) 2) (fantasmaR-em ?x ?y)
+    :precondition (and (turno-red) (fantasmaR-em ?x ?y)
         (not(check-turno)) (not(fantasmaR-morto)) (fantasmaR-down) (inc ?y ?yn))
     :effect (and
         (when
@@ -455,7 +530,7 @@ actionsRed = """
 
 (:action fantasmaR-left
     :parameters (?x ?y ?xn - posicao)
-    :precondition (and (= (turno) 2) (fantasmaR-em ?x ?y)
+    :precondition (and (turno-red) (fantasmaR-em ?x ?y)
         (not(check-turno)) (not(fantasmaR-morto)) (fantasmaR-left) (dec ?x ?xn))
     :effect (and
         (when
@@ -478,7 +553,7 @@ actionsRed = """
 
 (:action fantasmaR-right
     :parameters (?x ?y ?xn - posicao)
-    :precondition (and (= (turno) 2) (fantasmaR-em ?x ?y) (not(check-turno)) (not(fantasmaR-morto)) (fantasmaR-right) (inc ?x ?xn))
+    :precondition (and (turno-red) (fantasmaR-em ?x ?y) (not(check-turno)) (not(fantasmaR-morto)) (fantasmaR-right) (inc ?x ?xn))
     :effect (and
         (when
             (not(parede-em ?xn ?y))
@@ -519,7 +594,7 @@ actionsGreen = """
 (:action fantasmaG-up
     :parameters (?x ?y ?yn - posicao)
     :precondition (and (fantasmaG-em ?x ?y)
-        (not(check-turno)) ((= (turno) 3)) (not(fantasmaG-morto)) (fantasmaG-up) (dec ?y ?yn))
+        (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-up) (dec ?y ?yn))
     :effect (and
         (when
             (and
@@ -542,7 +617,7 @@ actionsGreen = """
 (:action fantasmaG-down
     :parameters (?x ?y ?yn - posicao)
     :precondition (and (fantasmaG-em ?x ?y)
-        (not(check-turno)) ((= (turno) 3)) (not(fantasmaG-morto)) (fantasmaG-down) (inc ?y ?yn))
+        (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-down) (inc ?y ?yn))
     :effect (and
         (when
             (and
@@ -565,7 +640,7 @@ actionsGreen = """
 (:action fantasmaG-left
     :parameters (?x ?y ?xn - posicao)
     :precondition (and (fantasmaG-em ?x ?y)
-        (not(check-turno)) ((= (turno) 3)) (not(fantasmaG-morto)) (fantasmaG-left) (dec ?x ?xn))
+        (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-left) (dec ?x ?xn))
     :effect (and
         (when
             (and
@@ -588,7 +663,7 @@ actionsGreen = """
 (:action fantasmaG-right
     :parameters (?x ?y ?xn - posicao)
     :precondition (and (fantasmaG-em ?x ?y)
-        (not(check-turno)) ((= (turno) 3)) (not(fantasmaG-morto)) (fantasmaG-right) (inc ?x ?xn))
+        (not(check-turno)) (turno-green) (not(fantasmaG-morto)) (fantasmaG-right) (inc ?x ?xn))
     :effect (and
         (when
             (and
@@ -632,7 +707,7 @@ actionsBlue = """
 (:action fantasmaB-up
     :parameters (?x ?y ?yn - posicao)
     :precondition (and (fantasmaB-em ?x ?y)
-        (not(check-turno)) ((= (turno) 4)) (not(fantasmaB-morto)) (fantasmaB-up) (dec ?y ?yn))
+        (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-up) (dec ?y ?yn))
     :effect (and
         (when
             (and
@@ -655,7 +730,7 @@ actionsBlue = """
 (:action fantasmaB-down
     :parameters (?x ?y ?yn - posicao)
     :precondition (and (fantasmaB-em ?x ?y)
-        (not(check-turno))((= (turno) 4)) (not(fantasmaB-morto)) (fantasmaB-down) (inc ?y ?yn))
+        (not(check-turno))(turno-blue) (not(fantasmaB-morto)) (fantasmaB-down) (inc ?y ?yn))
     :effect (and
         (when
             (and
@@ -678,7 +753,7 @@ actionsBlue = """
 (:action fantasmaB-left
     :parameters (?x ?y ?xn - posicao)
     :precondition (and (fantasmaB-em ?x ?y)
-        (not(check-turno)) ((= (turno) 4)) (not(fantasmaB-morto)) (fantasmaB-left) (dec ?x ?xn))
+        (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-left) (dec ?x ?xn))
     :effect (and
         (when
             (and
@@ -701,7 +776,7 @@ actionsBlue = """
 (:action fantasmaB-right
     :parameters (?x ?y ?xn - posicao)
     :precondition (and (fantasmaB-em ?x ?y)
-        (not(check-turno)) ((= (turno) 4)) (not(fantasmaB-morto)) (fantasmaB-right) (inc ?x ?xn))
+        (not(check-turno)) (turno-blue) (not(fantasmaB-morto)) (fantasmaB-right) (inc ?x ?xn))
     :effect (and
         (when
             (and
@@ -722,34 +797,14 @@ actionsBlue = """
 )
 """
 
-def write_domain(existR, existG, existB, existP, existI):
-    with open("domainPACMAN.pddl", "w") as f:
-        f.write("(define (domain pacman)\n\n")
-        f.write("(:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions :fluents :derived-predicates)\n")
-        f.write("(:types posicao)\n")
-        f.write("""(:functions (turno) )\n""")
-        
-        f.write(predicadosBase)
-        if existP:
-            f.write(predicadosPortal)
-        if existI:
-            f.write(predicadosGelo)
-        if existR:
-            f.write(predicadosRed)
-        if existG:
-            f.write(predicadosGreen)
-        if existB:
-            f.write(predicadosBlue)
-        f.write(")")
-        f.write("""
+derivedPredicates = """
 (:derived (pode-mover ?x ?y - posicao)
     (and 
         (not (parede-em ?x ?y))
         (not (portal-em ?x ?y))
         (not (gelo-em ?x ?y))
     )
-)\n\n""")
-        f.write("""
+)
 (:derived (pacman-perigo ?px ?py - posicao)
     (or 
         (and 
@@ -765,7 +820,27 @@ def write_domain(existR, existG, existB, existP, existI):
             (fantasmaB-em ?px ?py)
             (not (frutaB-ativa)))
     )
-)\n\n""")
+)"""
+
+def write_domain(existR, existG, existB, existP, existI):
+    with open("domainDESEMPENHO.pddl", "w") as f:
+        f.write("(define (domain pacman)\n\n")
+        f.write("(:requirements :strips :disjunctive-preconditions :typing :conditional-effects :negative-preconditions :derived-predicates)\n")
+        f.write("(:types posicao)\n")
+        
+        f.write(predicadosBase)
+        if existP:
+            f.write(predicadosPortal)
+        if existI:
+            f.write(predicadosGelo)
+        if existR:
+            f.write(predicadosRed)
+        if existG:
+            f.write(predicadosGreen)
+        if existB:
+            f.write(predicadosBlue)
+        f.write(")")
+        f.write(derivedPredicates)
         f.write("\n")
         f.write(actionsBase)
         if existP:
@@ -807,7 +882,7 @@ for y, linha in enumerate(mapa):
 
 write_domain(ExisteR, ExisteG, ExisteB, ExisteP, ExisteI)
 
-with open("problemPACMAN.pddl", "w") as f:
+with open("problemDESEMPENHO.pddl", "w") as f:
     f.write("""
     (define (problem pacmanCOMPETICAOTOP)
         (:domain pacman)
@@ -825,7 +900,8 @@ with open("problemPACMAN.pddl", "w") as f:
 
     f.write("""
     (:init
-    (= (turno) 0)
+    (not (check-turno)) 
+    (turno-pacman)
 """)
     if ExisteR == True:
         f.write("""
