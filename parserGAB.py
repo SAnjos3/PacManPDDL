@@ -3,7 +3,7 @@ import os
 import re
 
 domainRGB = """
-            (:predicates
+        (:predicates
         ; Localização
         (pacman-em ?px ?py - posicao)
         (fantasmaR-em ?px ?py - posicao)

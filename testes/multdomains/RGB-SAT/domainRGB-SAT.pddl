@@ -20,6 +20,7 @@
         (portal-em ?x ?y ?px ?py)
 
         ; Frutas
+        (custo-fruta)
         (frutaR-em ?px ?py - posicao)
         (frutaG-em ?px ?py - posicao)
         (frutaB-em ?px ?py - posicao)
@@ -85,17 +86,17 @@
             ;; Comer fruta R se presente
             (when
                 (and (pacman-em ?px ?py) (frutaR-em ?px ?py))
-                (and (frutaR-ativa) (not(frutaR-em ?px ?py)) (not(frutaB-ativa)) (not(frutaG-ativa)))
+                (and (frutaR-ativa) (not(frutaR-em ?px ?py)) (not(frutaB-ativa)) (not(frutaG-ativa))(custo-fruta))
             )
             ;; Comer fruta G se presente
             (when
                 (and (pacman-em ?px ?py) (frutaG-em ?px ?py))
-                (and (frutaG-ativa) (not(frutaG-em ?px ?py)) (not(frutaB-ativa)) (not(frutaR-ativa)))
+                (and (frutaG-ativa) (not(frutaG-em ?px ?py)) (not(frutaB-ativa)) (not(frutaR-ativa))(custo-fruta))
             )
             ;; Comer fruta B se presente
             (when
                 (and (pacman-em ?px ?py) (frutaB-em ?px ?py))
-                (and (frutaB-ativa) (not(frutaB-em ?px ?py)) (not(frutaR-ativa)) (not(frutaG-ativa)))
+                (and (frutaB-ativa) (not(frutaB-em ?px ?py)) (not(frutaR-ativa)) (not(frutaG-ativa))(custo-fruta))
             )
         )
     )
@@ -136,18 +137,11 @@
             (fantasmaG-up)
             (checar-morto-pre)
             (when
-                (and
-                    (or
-                        (frutaR-ativa)
-                        (frutaB-ativa)
-                        (frutaG-ativa)))
+                (and (custo-fruta))
                 (and (increase (total-cost) 4))
             )
             (when
-                (and
-                    (not(frutaR-ativa))
-                    (not(frutaG-ativa))
-                    (not(frutaB-ativa)))
+                (and (not(custo-fruta)))
                 (and (increase (total-cost) 2))
             )
         )
@@ -164,18 +158,11 @@
             (fantasmaG-down)
             (checar-morto-pre)
             (when
-                (and
-                    (or
-                        (frutaR-ativa)
-                        (frutaB-ativa)
-                        (frutaG-ativa)))
+                (and (custo-fruta))
                 (and (increase (total-cost) 4))
             )
             (when
-                (and
-                    (not(frutaR-ativa))
-                    (not(frutaG-ativa))
-                    (not(frutaB-ativa)))
+                (and (not(custo-fruta)))
                 (and (increase (total-cost) 2))
             )
         )
@@ -192,18 +179,11 @@
             (fantasmaG-down)
             (checar-morto-pre)
             (when
-                (and
-                    (or
-                        (frutaR-ativa)
-                        (frutaB-ativa)
-                        (frutaG-ativa)))
+                (and (custo-fruta))
                 (and (increase (total-cost) 4))
             )
             (when
-                (and
-                    (not(frutaR-ativa))
-                    (not(frutaG-ativa))
-                    (not(frutaB-ativa)))
+                (and (not(custo-fruta)))
                 (and (increase (total-cost) 2))
             )
         )
@@ -220,18 +200,11 @@
             (fantasmaG-down)
             (checar-morto-pre)
             (when
-                (and
-                    (or
-                        (frutaR-ativa)
-                        (frutaB-ativa)
-                        (frutaG-ativa)))
+                (and (custo-fruta))
                 (and (increase (total-cost) 4))
             )
             (when
-                (and
-                    (not(frutaR-ativa))
-                    (not(frutaG-ativa))
-                    (not(frutaB-ativa)))
+                (and (not(custo-fruta)))
                 (and (increase (total-cost) 2))
             )
         )
@@ -248,12 +221,18 @@
                 (and
                     (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
-
+                    (increase(total-cost)2)
                     (pacman-em ?x ?yn)
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
                 )
+            )
+            (when
+                (and(pastilha-em ?x ?yn)
+                    (not(custo-fruta)))
+                (and(not(pastilha-em ?x ?yn)))
+                (decrease(total-cost)1)
             )
             (when
                 (and(parede-em ?x ?yn))
@@ -262,26 +241,13 @@
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
+                    (increase(total-cost)4)
                 )
             )
             (when
-                (and(not(parede-em ?x ?yn))(pastilha-em ?x ?yn))
-                (and(increase(total-cost)1)))
-            (when
-                (and(not(parede-em ?x ?yn)))
-                (and(increase(total-cost)2)))
-            (when
-                (and(parede-em ?x ?yn))
-                (and(increase(total-cost)4)))
-            (when
-                (and(not(parede-em ?x ?yn))
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)4)))
-            (when
-                (and(parede-em ?x ?yn)
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)8)))
-
+                (and(parede-em ?x ?yn)(custo-fruta))
+                (and (increase(total-cost)4))
+            )
         )
     )
     (:action move-pacman-down
@@ -296,12 +262,18 @@
                 (and
                     (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
-
+                    (increase(total-cost)2)
                     (pacman-em ?x ?yn)
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
                 )
+            )
+            (when
+                (and(pastilha-em ?x ?yn)
+                    (not(custo-fruta)))
+                (and(not(pastilha-em ?x ?yn)))
+                (decrease(total-cost)1)
             )
             (when
                 (and(parede-em ?x ?yn))
@@ -310,26 +282,13 @@
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
+                    (increase(total-cost)4)
                 )
             )
             (when
-                (and(not(parede-em ?x ?yn))(pastilha-em ?x ?yn))
-                (and(increase(total-cost)1)))
-            (when
-                (and(not(parede-em ?x ?yn)))
-                (and(increase(total-cost)2)))
-            (when
-                (and(parede-em ?x ?yn))
-                (and(increase(total-cost)4)))
-            (when
-                (and(not(parede-em ?x ?yn))
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)4)))
-            (when
-                (and(parede-em ?x ?yn)
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)8)))
-
+                (and(parede-em ?x ?yn)(custo-fruta))
+                (and (increase(total-cost)4))
+            )
         )
     )
     (:action move-pacman-left
@@ -342,9 +301,9 @@
                 )
 
                 (and
-                    (not(pacman-em ?x ?y))
+                    (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
-
+                    (increase(total-cost)2)
                     (pacman-em ?xn ?y)
                     (fantasmaB-down)
                     (fantasmaG-up)
@@ -352,33 +311,25 @@
                 )
             )
             (when
+                (and(pastilha-em ?xn ?y)
+                    (not(custo-fruta)))
+                (and(not(pastilha-em ?xn ?y)))
+                (decrease(total-cost)1)
+            )
+            (when
                 (and(parede-em ?xn ?y))
                 (and
                     (not(pacman-liberado))
-
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
+                    (increase(total-cost)4)
                 )
             )
             (when
-                (and(not(parede-em ?xn ?y))(pastilha-em ?xn ?y))
-                (and(increase(total-cost)1)))
-            (when
-                (and(not(parede-em ?xn ?y)))
-                (and(increase(total-cost)2)))
-            (when
-                (and(parede-em ?xn ?y))
-                (and(increase(total-cost)4)))
-            (when
-                (and(not(parede-em ?xn ?y))
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)4)))
-            (when
-                (and(parede-em ?xn ?y)
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)8)))
-
+                (and(parede-em ?xn ?y)(custo-fruta))
+                (and (increase(total-cost)4))
+            )
         )
     )
     (:action move-pacman-right
@@ -391,9 +342,9 @@
                 )
 
                 (and
-                    (not(pacman-em ?x ?y))
+                    (not (pacman-em ?x ?y))
                     (not(pacman-liberado))
-
+                    (increase(total-cost)2)
                     (pacman-em ?xn ?y)
                     (fantasmaB-down)
                     (fantasmaG-up)
@@ -401,32 +352,25 @@
                 )
             )
             (when
+                (and(pastilha-em ?xn ?y)
+                    (not(custo-fruta)))
+                (and(not(pastilha-em ?xn ?y)))
+                (decrease(total-cost)1)
+            )
+            (when
                 (and(parede-em ?xn ?y))
                 (and
                     (not(pacman-liberado))
-
                     (fantasmaB-down)
                     (fantasmaG-up)
                     (checar-morto-pre)
+                    (increase(total-cost)4)
                 )
             )
             (when
-                (and(not(parede-em ?xn ?y))(pastilha-em ?xn ?y))
-                (and(increase(total-cost)1)))
-            (when
-                (and(not(parede-em ?xn ?y)))
-                (and(increase(total-cost)2)))
-            (when
-                (and(parede-em ?xn ?y))
-                (and(increase(total-cost)4)))
-            (when
-                (and(not(parede-em ?xn ?y))
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)4)))
-            (when
-                (and(parede-em ?xn ?y)
-                    (or(frutaB-ativa)(frutaG-ativa)(frutaR-ativa)))
-                (and(increase(total-cost)8)))
+                (and(parede-em ?xn ?y)(custo-fruta))
+                (and (increase(total-cost)4))
+            )
         )
     )
     ;=================================================================================================
