@@ -30,8 +30,8 @@ def linkar_portais(mapa, w, h):
 
 def gerar_acoes_pacman(x, y, d, mapa, w, h, portais):
     dx, dy = directions[d]
-    name = f"pacman-posx{x}y{y}-{d}"
-    pre = f"(and (pacman-pos posx{x}y{y}) (turno-pacman) (not (check-turno)))"
+    name = f"move-pacman-x{x}y{y}-{d}"
+    pre = f"""(and (pacman-em  x{x}y{y}) (turno-pacman) (not (check-turno)) )"""
     tx, ty = x + dx, y + dy
     if (not in_mapa(tx, ty, w, h)) or (mapa[ty-1][tx-1] == "#"):
         fx, fy = x, y
@@ -62,11 +62,10 @@ def gerar_acoes_pacman(x, y, d, mapa, w, h, portais):
     elif d == "right":
         ghost_eff = "(fantasmaB-left) (fantasmaG-right) (fantasmaR-down)"
     eff = (f"""
-            (and (not (pacman-pos posx{x}y{y})) (check-turno) (pacman-pos posx{fx}y{fy}){extra} 
-                (when(and (pacman-pos posx{fx}y{fy}) (or (fantasmaR-em posx{fx}y{fy}) (fantasmaG-em posx{fx}y{fy}) (fantasmaB-em posx{fx}y{fy}))) 
-                    (and(pacman-morto))
-                (when)
-                ) 
+            (and 
+            (when (and (pacman-perigo ?p)) (and (pacman-morto)))
+        
+            (not (pacman-em  x{x}y{y})) (check-turno) (pacman-em  x{fx}y{fy}) {extra} 
         {ghost_eff})""")
     return f"""
     (:action {name}    
@@ -81,15 +80,15 @@ def generate_domain(mapa, w, h, portais):
     for y in range(1, h+1):
         for x in range(1, w+1):
             if mapa[y-1][x-1] != "#":
-                cnts.add(f"posx{x}y{y}")
+                cnts.add(f"x{x}y{y}")
     lines.append("(define (domain pacmanNew)")
-    lines.append("  (:requirements :strips :negative-preconditions :typing)")
+    lines.append("  (:requirements :strips :negative-preconditions :typing :disjunctive-preconditions :conditional-effects :derived-predicates)")
     lines.append("  (:types posicao)")
     lines.append("  (:constants")
     lines.append("       " + " ".join(sorted(cnts)) + " - posicao")
     lines.append("  )")
     lines.append("  (:predicates")
-    lines.append("       (pacman-pos ?p - posicao)")
+    lines.append("       (pacman-em  ?p - posicao)")
     lines.append("       (fantasmaR-em ?p - posicao)")
     lines.append("       (fantasmaG-em ?p - posicao)")
     lines.append("       (fantasmaB-em ?p - posicao)")
@@ -123,6 +122,51 @@ def generate_domain(mapa, w, h, portais):
     lines.append("       (fantasmaB-left)")
     lines.append("       (fantasmaB-right)")
     lines.append("  )")
+    lines.append("""
+        (:derived
+        (pacman-perigo ?p - posicao)
+        (or
+            (and
+                (pacman-em ?p)
+                (fantasmaR-em ?p)
+                (not (frutaR-ativa)))
+            (and
+                (pacman-em ?p)
+                (fantasmaG-em ?p)
+                (not (frutaG-ativa)))
+            (and
+                (pacman-em ?p)
+                (fantasmaB-em ?p)
+                (not (frutaB-ativa)))
+        ))""")
+    lines.append(f"""
+    (:action comer-fantasma-red
+    :parameters (?p - posicao)
+    :precondition(and (pacman-em ?p)(fantasmaR-em ?p) (frutaR-ativa)
+        (not(frutaB-ativa))
+        (not(frutaG-ativa)))
+    :effect(and (check-turno)(fantasmaR-morto)
+        (not(frutaR-ativa))
+        (not(fantasmaR-em ?p))))
+
+    (:action comer-fantasma-green
+    :parameters (?p - posicao)
+    :precondition(and (pacman-em ?p)(fantasmaG-em ?p) (frutaG-ativa)
+        (not(frutaB-ativa))
+        (not(frutaR-ativa)))
+    :effect(and (check-turno)(fantasmaG-morto)
+        (not(frutaG-ativa))
+        (not(fantasmaG-em ?p))))
+    
+    (:action comer-fantasma-blue
+    :parameters (?p - posicao)
+    :precondition(and (pacman-em ?p) (fantasmaB-em ?p) (frutaB-ativa)
+        (not(frutaR-ativa))
+        (not(frutaG-ativa)))
+    :effect(and (check-turno)(fantasmaB-morto)
+        (not(frutaB-ativa))
+        (not(fantasmaB-em ?p))))""")
+    
     for y in range(1, h+1):
         for x in range(1, w+1):
             if mapa[y-1][x-1] != "#":
@@ -140,14 +184,14 @@ def generate_domain(mapa, w, h, portais):
                 turn, next_eff = "turno-blue", {"up":"down","down":"up","left":"right","right":"left"}[d]
 
             pre = f"(and ({turn}) (not (check-turno)) ({ghost} ?p1) ({d} ?p1 ?p2))"
-            eff = f"(and (not ({ghost} ?p1)) ({ghost} ?p2) (when (and (pacman-pos ?p2) ({ghost} ?p2)) (pacman-morto)))"
+            eff = f"(and (not ({ghost} ?p1)) ({ghost} ?p2) (when (and (pacman-em  ?p2) ({ghost} ?p2)) (pacman-morto)))"
             lines.append(f"(:action {name}\n    :parameters (?p1 - posicao ?p2 - posicao)\n    :precondition {pre}\n    :effect {eff}\n)\n")
             
-    for turn, nxt in [("turno-pacman","turno-red"), ("turno-red","turno-green"), ("turno-green","turno-blue"), ("turno-blue","turno-pacman")]:
+    for turn, nxt, agnt in [("turno-pacman","turno-red",""), ("turno-red","turno-green","(fantasmaR-morto)"), ("turno-green","turno-blue","(fantasmaG-morto)"), ("turno-blue","turno-pacman","(fantasmaB-morto)")]:
         lines.append(f"""
                     (:action avancar-turno-{turn}
                         :parameters ()\n    
-                        :precondition (and (check-turno) ({turn}) (not (pacman-morto)))    
+                        :precondition (and (check-turno) (or ({turn}) (and({turn}){agnt}) ) (not (pacman-morto)))    
                         :effect (and (not (check-turno)) (not ({turn})) ({nxt}))
                     )""")
 
@@ -163,15 +207,15 @@ def generate_problem(mapa, w, h):
     for y in range(1, h+1):
         for x in range(1, w+1):
             cell = mapa[y-1][x-1]
-            if cell == '':
-                lines.append(f"       (pacman-pos posx{x}y{y})")
+            if cell == 'P':
+                lines.append(f"       (pacman-em  x{x}y{y})")
             if cell == 'R':
-                lines.append(f"       (fantasmaR-em posx{x}y{y})")
+                lines.append(f"       (fantasmaR-em x{x}y{y})")
             if cell == 'G':
-                lines.append(f"       (fantasmaG-em posx{x}y{y})")
+                lines.append(f"       (fantasmaG-em x{x}y{y})")
             if cell == 'B':
-                lines.append(f"       (fantasmaB-em posx{x}y{y})")
-
+                lines.append(f"       (fantasmaB-em x{x}y{y})")
+    lines.append("       (turno-pacman)")
     lines.append("       (not (frutaR-ativa))")
     lines.append("       (not (frutaG-ativa))")
     lines.append("       (not (frutaB-ativa))")
@@ -181,9 +225,13 @@ def generate_problem(mapa, w, h):
                 for d, (dx, dy) in directions.items():
                     nx, ny = x+dx, y+dy
                     if in_mapa(nx, ny, w, h) and mapa[ny-1][nx-1] != "#":
-                        lines.append(f"       ({d} posx{x}y{y} posx{nx}y{ny})")
+                        lines.append(f"       ({d} x{x}y{y} x{nx}y{ny})")
     lines.append("  )")
-    lines.append("  (:goal (and (not (pacman-morto))))")
+    lines.append("""  (:goal (and (not (pacman-morto))
+        (fantasmaR-morto)
+        (fantasmaG-morto)
+        (fantasmaB-morto))
+                )""")
     lines.append(")")
     return "\n".join(lines)
 
